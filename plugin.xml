@@ -1,0 +1,113 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Created by Stuart Douglas (sdouglas@macadamian.com) on June 11, 2015.
+ Copyright (c) 2015 Macadamian. All rights reserved.
+-->
+
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        id="com.macadamian.blinkup"
+        version="0.1">
+    
+    <name>BlinkUpPlugin</name>
+    <description>
+        This plugin allows you to integrate the native BlinkUp process for setting up an Electric Imp device directly into your Cordova / PhoneGap project.
+        
+        The Plan ID, Device ID, Agent URL, Verfication Date, and status of the operation are all passed back as JSON to the Cordova application, along with a status or error code (see ReadMe.md for JSON format and status code definitions).
+    </description>
+    
+    <info>
+        There are several required steps to perform before your application will run. Please see ReadMe.md for information on installation and usage.
+    </info>
+    
+    <license>
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        
+        Created by Stuart Douglas (sdouglas@macadamian.com) on June 11, 2015.
+        Copyright (c) 2015 Macadamian. All rights reserved.
+    </license>
+
+    <engines>
+        <engine name="cordova" version=">=3.4.0"/>
+    </engines>
+
+    <asset src="www/blinkup.js" target="js/blinkup.js"/>
+
+    <js-module src="www/blinkup.js" name="blinkup">
+        <clobbers target="blinkup" />
+    </js-module>
+
+    <!--========== Android ==========-->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="BlinkUpPlugin">
+                <param name="android-package" value="com.macadamian.blinkup.BlinkUpPlugin" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.macadamian.blinkup.ClearCompleteActivity" />
+            <activity android:name="com.macadamian.blinkup.BlinkUpCompleteActivity" />
+            <activity android:name="com.electricimp.blinkup.WifiSelectActivity" android:label="BlinkUp" />
+            <activity android:name="com.electricimp.blinkup.BlinkupGLActivity" android:label="BlinkUp" />
+            <activity android:name="com.electricimp.blinkup.WifiActivity" android:label="BlinkUp" />
+            <activity android:name="com.electricimp.blinkup.WPSActivity" android:label="BlinkUp" />
+            <activity android:name="com.electricimp.blinkup.ClearWifiActivity" android:label="BlinkUp" />
+            <activity android:name="com.electricimp.blinkup.InterstitialActivity" android:label="BlinkUp" />
+        </config-file>
+
+        <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
+
+        <source-file src="src/android/BlinkUpPlugin.java" target-dir="src/com/macadamian/blinkup/" />
+        <source-file src="src/android/BlinkUpPluginResult.java" target-dir="src/com/macadamian/blinkup" />
+        <source-file src="src/android/BlinkUpCompleteActivity.java" target-dir="src/com/macadamian/blinkup" />
+        <source-file src="src/android/ClearCompleteActivity.java" target-dir="src/com/macadamian/blinkup" />
+    </platform>
+
+    <!--========== iOS ==========-->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="BlinkUpPlugin">
+                <param name="ios-package" value="BlinkUpPlugin" />
+            </feature>
+        </config-file>
+
+        <framework src="Security.framework"/>
+        <framework src="OpenGLES.framework"/>
+        <framework src="QuartzCore.framework"/>
+        <framework src="SystemConfiguration.framework"/>
+
+        <header-file src="src/ios/BlinkUpPlugin.h" />
+        <source-file src="src/ios/BlinkUpPlugin.m" />
+        <header-file src="src/ios/BlinkUpPluginResult.h" />
+        <source-file src="src/ios/BlinkUpPluginResult.m" />
+        <header-file src="src/ios/Categories/BUDeviceInfo+JSON.h" />
+        <source-file src="src/ios/Categories/BUDeviceInfo+JSON.m" />
+    </platform>
+    
+</plugin>
