@@ -1,13 +1,32 @@
-Installation
+Introduction
 ==============
 
+This Cordova / Phonegap plugin allows you to easily integrate the native BlinkUp process to connect an Electric Imp device to the internet in your app. Note that because the BlinkUp SDK is private, you will need to add it to your project after installing the plugin. If you do not have access to the BlinkUp SDK, you may contact Electric Imp at sales@electricimp.com.
+
+## Table of Contents
+
+**[Installation](#installation)**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[iOS](#ios)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Android](#android)<br>
+**[Using the Plugin](#using-the-plugin)**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[API Calls](#api-calls)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Callbacks](#callbacks)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Testing the Plugin](#testing-the-plugin)<br>
+**[JSON Format](#json-format)**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Status Codes](#status-codes)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Error Codes](#error-codes)<br>
+**[Troubleshooting](#troubleshooting)**
+
+Installation
+==============
 **STEP 1**<br>
-Navigate to your project directory and install the plugin with `cordova plugin add /path/to/plugin`. Add both platforms if you haven't already with `cordova platform add ios` and `cordova platform add android`.
+Navigate to your project directory and install the plugin with `cordova plugin add https://github.com/Macadamian/Cordova-BlinkUpPlugin.git`. Add both platforms if you haven't already with `cordova platform add ios` and `cordova platform add android`.
 
 iOS
 --------------
-Open `/path/to/project/platforms/ios/<ProjectName>.xcodeproj` in Xcode and choose File > Add Files to Project. Select the `BlinkUp.framework` file given to you by Electric Imp, and ensure that both "*Copy items if needed*" and "*Add to targets: <ProjectName>*" are selected. Do the same for `BlinkUp.framework/resources/versions/A/BlinkUp.bundle`.
+Open `/path/to/project/platforms/ios/<ProjectName>.xcodeproj` in Xcode, select the "Frameworks" group and choose File > Add Files to \<ProjectName\>. Select the `BlinkUp.embeddedframework` file given to you by Electric Imp, and ensure that both "*Copy items if needed*" and "*Add to targets: \<ProjectName\>*" are selected. 
 
+Expand the `BlinkUp.embeddedframework` you just added to Frameworks, and drag the `BlinkUp.framework` file  to `Link Binary with Libraries`, and `BlinkUp.bundle` (in BlinkUp.embeddedframework/Resources) to the `Copy Bundle Resources` in the project's `Build Phases`.
 
 Android
 --------------
@@ -20,7 +39,7 @@ Open `path/to/project/platforms/android/cordova/lib/build.js` and add the follow
 'include ":blinkup_sdk"\n' +
 ```
 It should now look like this:
-```
+```javascript
 fs.writeFileSync(path.join(projectPath, 'settings.gradle'),
     '// GENERATED FILE - DO NOT EDIT\n' +
     'include ":"\n' +
@@ -30,12 +49,15 @@ fs.writeFileSync(path.join(projectPath, 'settings.gradle'),
 
 **STEP 3**<br>
 Open `MainActivity.java`. If your project is *com.company.project* then it's located in `platforms/android/src/com/company/project`. Add the following imports:
-```
+
+```java
 import android.content.Intent;
 import com.electricimp.blinkup.BlinkupController;
 ```
+
 And the following method:
-```
+
+```java
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
@@ -53,7 +75,9 @@ When you are adding calls to the plugin in your javascript note that you must up
 
 API Calls
 ----------
-There are three calls from the plugin exposed to the javascript. All take success and failure callbacks as arguments. See the "Callbacks" section below for more information.
+There are three calls from the plugin exposed to the javascript through the `blinkup` interface. For example, to show a BlinkUp you would call `blinkup.invokeBlinkUp(...);`. 
+
+All calls take success and failure callbacks as arguments. See the "Callbacks" section below for more information.
 
 **invokeBlinkUp(apiKey, planId, timeoutMs, generatePlanId, success, failure)**<br>
 Presents the native BlinkUp interface, where user can input wifi info and connect to the Imp.<br>
@@ -65,7 +89,7 @@ Presents the native BlinkUp interface, where user can input wifi info and connec
 **abortBlinkUp(success, failure)**<br>
 Cancels server polling for device info if in progress. 
 
-**clearWifiAndCache(success, failure)**<br>
+**clearBlinkUpData(success, failure)**<br>
 Immediately initiates the BlinkUp flashing process that will clear the imp's wifi info. Also clears the cached planId if there is one.
 
 Callbacks
@@ -73,12 +97,12 @@ Callbacks
 It is recommended to use the same function as the success callback and failure callback, as the JSON parsing will be common to both. See the "JSON format" section for information regarding the JSON sent back to the javascript.
 
 An example callback function is below, where `errorForCode` and `statusForCode` are functions you must define that map error codes and status codes to their respective messages.
-```
+```javascript
 var callback = function (message) {
     try {
         var jsonData = JSON.parse("(" + message + ")"); 
         
-        if (jsonData.sate == "error") {
+        if (jsonData.state == "error") {
             if (jsonData.error.errorType == "blinkup") {
                 var statusMsg = jsonData.error.errorMsg;
             } else {
@@ -163,3 +187,31 @@ IMPORTANT NOTE: the following codes apply ONLY if `errorType` is "plugin". Error
 301 - "Could not verify API key with Electric Imp servers."
 302 - "Error generating JSON string."
 ```
+
+Troubleshooting
+==========
+###iOS
+**BlinkUp/BlinkUp.h cannot be found**
+- `BlinkUp.embeddedframework` is not in `path/to/project/platforms/ios/`
+- `BlinkUp.framework` is not in the project's "Link binary with libraries" build phase
+- "Framework Search Paths" in the project's build settings does not include `$(PROJECT_DIR)/BlinkUp.embeddedframework`
+
+###Android
+**Project with path "blinkup_sdk" could not be found**
+- The `blinkup_sdk` folder is not in `path/to/project/platforms/android/`
+- The `build.js` file was not updated as outlined in [installation](#android)
+- `cordova build android` was not run after updating the `build.js` file
+
+###BlinkUp
+**BlinkUp process times out**
+- Lighting significantly affects the BlinkUp process. It doesn't need to be pitch black to connect, but try to find somewhere out of the way of any direct light sources
+- The network name and password are incorrect
+- The Imp was moved, or was not pressed right up against the phone for the duration of the BlinkUp
+
+**Imp is not lit up, and won't react to the BlinkUp process**
+- The USB power cable is not connected to the Imp, or to a power source
+- Sometimes you need to unplug and replug in the power cable to "wake" the Imp up. This should get it to start flashing, and ready to recognize a BlinkUp
+
+**Javascript gives "blinkup not defined"**
+- There is a typo in the function being called, or it is not one of the exposed functions outlined in [api calls](#api-calls)
+- The function being called is not called on a `blinkup` object, as discussed in [api calls](#api-calls)
