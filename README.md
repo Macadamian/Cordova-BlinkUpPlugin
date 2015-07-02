@@ -19,14 +19,20 @@ This Cordova / Phonegap plugin allows you to easily integrate the native BlinkUp
 
 Installation
 ==============
-**STEP 1**<br>
 Navigate to your project directory and install the plugin with `cordova plugin add https://github.com/Macadamian/Cordova-BlinkUpPlugin.git`. Add both platforms if you haven't already with `cordova platform add ios` and `cordova platform add android`.
 
 iOS
 --------------
+**STEP 1**<br>
 Open `/path/to/project/platforms/ios/<ProjectName>.xcodeproj` in Xcode, select the "Frameworks" group and choose File > Add Files to \<ProjectName\>. Select the `BlinkUp.embeddedframework` file given to you by Electric Imp, and ensure that both "*Copy items if needed*" and "*Add to targets: \<ProjectName\>*" are selected. 
 
 Expand the `BlinkUp.embeddedframework` you just added to Frameworks, and drag the `BlinkUp.framework` file  to `Link Binary with Libraries`, and `BlinkUp.bundle` (in BlinkUp.embeddedframework/Resources) to the `Copy Bundle Resources` in the project's `Build Phases`.
+
+**STEP 2**<br>
+Go to the project's Build Setting in Xcode, and in the `Apple LLVM - Preprocessing` section expand the "Preprocessor Macros" setting. Add the following to "Debug" (and only Debug!):
+```
+DEBUG=1
+```
 
 Android
 --------------
