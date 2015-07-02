@@ -29,6 +29,8 @@
     
     <info>
         There are several required steps to perform before your application will run. Please see ReadMe.md for information on installation and usage.
+
+        If you previously had the plugin installed and are simply updating it, then you do not need to repeat the installation steps.
     </info>
     
     <license>
@@ -95,6 +97,7 @@
             <feature name="BlinkUpPlugin">
                 <param name="ios-package" value="BlinkUpPlugin" />
             </feature>
+            <preference name="DisallowOverscroll" value="true" />
         </config-file>
 
         <framework src="Security.framework"/>
