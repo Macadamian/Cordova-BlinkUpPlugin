@@ -49,58 +49,74 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * Parses arguments from javascript and displays BlinkUp
  ********************************************************/
 - (void)invokeBlinkUp:(CDVInvokedUrlCommand*)command {
+    NSLog(@"invokeBlinkUp Started.");
+
     self.callbackId = command.callbackId;
 
-    if (command.arguments.count <= BlinkUpArgumentGeneratePlanId) {
-        BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
-        pluginResult.state = Error;
-        [pluginResult setPluginError:INVALID_ARGUMENTS];
+    [self.commandDelegate runInBackground:^{
+        if (command.arguments.count <= BlinkUpArgumentGeneratePlanId) {
+            BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
+            pluginResult.state = Error;
+            [pluginResult setPluginError:INVALID_ARGUMENTS];
 
-        [self sendResultToCallback:pluginResult];
-        return;
-    }
+            [self sendResultToCallback:pluginResult];
+            return;
+        }
 
-    self.apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
-    self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentPlanId];
-    self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
-    self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
+        self.apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
+        self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentPlanId];
+        self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
+        self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
-    [self navigateToBlinkUpView];
+        NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)self.timeoutMs);
+        
+        [self navigateToBlinkUpView];
+    }];
 }
 
 /*********************************************************
  * Cancels device polling
  ********************************************************/
 - (void)abortBlinkUp:(CDVInvokedUrlCommand *)command {
+    NSLog(@"abortBlinkUp Started.");
+
     self.callbackId = command.callbackId;
 
-    [self.blinkUpController.devicePoller stopPolling];
-    self.blinkUpController = nil;
+    [self.commandDelegate runInBackground:^{
+        [self.blinkUpController.devicePoller stopPolling];
+        self.blinkUpController = nil;
 
-    BlinkUpPluginResult *abortResult = [[BlinkUpPluginResult alloc] init];
-    abortResult.state = Error;
-    [abortResult setPluginError:CANCELLED_BY_USER];
-    
-    [self sendResultToCallback:abortResult];
+        BlinkUpPluginResult *abortResult = [[BlinkUpPluginResult alloc] init];
+        abortResult.state = Error;
+        [abortResult setPluginError:CANCELLED_BY_USER];
+        
+        [self sendResultToCallback:abortResult];
+    }];
 }
 
 /********************************************************
  * Clears wifi configuration of Imp and cached planId
  ********************************************************/
 - (void) clearBlinkUpData:(CDVInvokedUrlCommand *)command {
+    NSLog(@"clearBlinkUpData Started.");
+
     self.callbackId = command.callbackId;
 
-    // clear cached planId
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:PLAN_ID_CACHE_KEY];
+    [self.commandDelegate runInBackground:^{
+        // clear cached planId
+        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:PLAN_ID_CACHE_KEY];
 
-    // create a controller to clear network info
-    BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
-    BUFlashController *flashController = [[BUFlashController alloc] init];
+        // create a controller to clear network info
+        BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
+        BUFlashController *flashController = [[BUFlashController alloc] init];
 
-    // present the clear device flashing screen
-    [flashController presentFlashWithNetworkConfig:clearConfig configId:nil animated:YES resignActive:
-    ^(BOOL willRespond, BUDevicePoller *devicePoller, NSError *error) {
-        [self blinkUpDidComplete:false userDidCancel:false error:nil clearedCache:true];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // present the clear device flashing screen
+            [flashController presentFlashWithNetworkConfig:clearConfig configId:nil animated:YES resignActive:
+             ^(BOOL willRespond, BUDevicePoller *devicePoller, NSError *error) {
+                 [self blinkUpDidComplete:false userDidCancel:false error:nil clearedCache:true];
+             }];
+        });
     }];
 }
 
@@ -130,20 +146,22 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         self.blinkUpController = [[BUBasicController alloc] initWithApiKey:self.apiKey planId:planId];
     }
 
-    [self.blinkUpController presentInterfaceAnimated:YES
-        resignActive: ^(BOOL willRespond, BOOL userDidCancel, NSError *error) {
-            [self blinkUpDidComplete:willRespond userDidCancel:userDidCancel error:error clearedCache:false];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.blinkUpController presentInterfaceAnimated:YES
+            resignActive: ^(BOOL willRespond, BOOL userDidCancel, NSError *error) {
+                [self blinkUpDidComplete:willRespond userDidCancel:userDidCancel error:error clearedCache:false];
 
-            // device poller is nil until this block completes, so set its timeout 0.5 seconds from now
-            // this is a HACK, need to solve before release
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                self.blinkUpController.devicePoller.pollTimeout = (self.timeoutMs / 1000.0);
-            });
-        }
-        devicePollingDidComplete: ^(BUDeviceInfo *deviceInfo, BOOL timedOut, NSError *error) {
-            [self deviceRequestDidCompleteWithDeviceInfo:deviceInfo timedOut:timedOut error:error];
-        }
-    ];
+                // device poller is nil until this block completes, so set its timeout 0.5 seconds from now
+                // this is a HACK, need to solve before release
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                    self.blinkUpController.devicePoller.pollTimeout = (self.timeoutMs / 1000.0);
+                });
+            }
+            devicePollingDidComplete: ^(BUDeviceInfo *deviceInfo, BOOL timedOut, NSError *error) {
+                [self deviceRequestDidCompleteWithDeviceInfo:deviceInfo timedOut:timedOut error:error];
+            }
+        ];
+    });
 }
 
 
@@ -153,7 +171,10 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * Sends status back to Cordova app.
  ********************************************************/
 - (void) blinkUpDidComplete:(BOOL)willRespond userDidCancel:(BOOL)userDidCancel error:(NSError*)error clearedCache:(BOOL)clearedCache {
-    
+
+    NSLog(@"blinkUpDidComplete Started. willRespond: %d userDidCancel: %d, Error: %@",
+          willRespond, userDidCancel, error);
+
     BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
 
     if (willRespond) {
@@ -188,7 +209,10 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * Sends device info and status back to Cordova app.
  ********************************************************/
 - (void) deviceRequestDidCompleteWithDeviceInfo:(BUDeviceInfo*)deviceInfo timedOut:(BOOL)timedOut error:(NSError*)error {
-    
+
+    NSLog(@"deviceRequestDidComplete Started. DeviceInfo: %@ TimedOut?: %d, Error: %@",
+          deviceInfo, timedOut, error);
+
     BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
 
     if (timedOut) {
