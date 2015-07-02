@@ -109,8 +109,8 @@
         <source-file src="src/ios/BlinkUpPlugin.m" />
         <header-file src="src/ios/BlinkUpPluginResult.h" />
         <source-file src="src/ios/BlinkUpPluginResult.m" />
-        <header-file src="src/ios/Categories/BUDeviceInfo+JSON.h" />
-        <source-file src="src/ios/Categories/BUDeviceInfo+JSON.m" />
+        <header-file src="src/ios/BUDeviceInfo+JSON.h" />
+        <source-file src="src/ios/BUDeviceInfo+JSON.m" />
     </platform>
     
 </plugin>
