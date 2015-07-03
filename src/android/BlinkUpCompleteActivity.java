@@ -63,14 +63,16 @@ public class BlinkUpCompleteActivity extends Activity {
                 successResult.setDeviceInfoAsJson(json);
                 successResult.sendResultsToCallback();
 
-                // cache planID (see electricimp.com/docs/manufacturing/planids/)
+                // cache planID if not development ID (see electricimp.com/docs/manufacturing/planids/)
                 try {
-                    SharedPreferences preferences = getSharedPreferences(BlinkUpPlugin.PLAN_ID_CACHE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString(BlinkUpPlugin.PLAN_ID_CACHE_KEY, json.getString("plan_id"));
-                    editor.apply();
-                }
-                catch (JSONException e) {
+                    String planId = json.getString("plan_id");
+                    if (!planId.equals(BlinkUpPlugin.developerPlanId)) {
+                        SharedPreferences preferences = getSharedPreferences(BlinkUpPlugin.PLAN_ID_CACHE_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(BlinkUpPlugin.PLAN_ID_CACHE_KEY, planId);
+                        editor.apply();
+                    }
+                } catch (JSONException e) {
                     BlinkUpPluginResult jsonErrorResult = new BlinkUpPluginResult();
                     jsonErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
                     jsonErrorResult.setPluginError(BlinkUpPlugin.ErrorCodes.JSON_ERROR.getCode());

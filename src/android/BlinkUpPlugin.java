@@ -38,7 +38,6 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
     // only needed in this class
     private String apiKey;
-    private String developerPlanId;
     private Boolean generatePlanId = false;
 
     // accessed from BlinkUpCompleteActivity and ClearCompleteActivity
@@ -48,6 +47,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     public static String PLAN_ID_CACHE_KEY = "planId";
     public static String PLAN_ID_CACHE_NAME = "DefaultPreferences";
     public static boolean clearedCache = false;
+    public static String developerPlanId; // don't want to cache planId if development
 
     public enum StatusCodes {
         DEVICE_CONNECTED(0),
@@ -74,7 +74,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
     // argument indexes from Cordova javascript
     final int BlinkUpArgumentApiKey = 0;
-    final int BlinkUpArgumentPlanId = 1;
+    final int BlinkUpArgumentDeveloperPlanId = 1;
     final int BlinkUpArgumentTimeOut = 2;
     final int BlinkUpArgumentGeneratePlanId = 3;
 
@@ -95,7 +95,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
         if (action.equalsIgnoreCase("invokeBlinkUp")) {
             try {
                 this.apiKey = data.getString(BlinkUpArgumentApiKey);
-                this.developerPlanId = data.getString(BlinkUpArgumentPlanId);
+                this.developerPlanId = data.getString(BlinkUpArgumentDeveloperPlanId);
                 timeoutMs = data.getInt(BlinkUpArgumentTimeOut);
                 this.generatePlanId = data.getBoolean(BlinkUpArgumentGeneratePlanId);
             } catch (JSONException exc) {

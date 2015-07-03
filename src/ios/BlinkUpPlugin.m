@@ -38,7 +38,7 @@ typedef NS_ENUM(NSInteger, BlinkUpErrorCodes) {
 
 typedef NS_ENUM(NSInteger, BlinkupArguments) {
     BlinkUpArgumentApiKey = 0,
-    BlinkUpArgumentPlanId,
+    BlinkUpArgumentDeveloperPlanId,
     BlinkUpArgumentTimeOut,
     BlinkUpArgumentGeneratePlanId
 };
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         }
 
         self.apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
-        self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentPlanId];
+        self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentDeveloperPlanId];
         self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
         self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
@@ -136,7 +136,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     // IMPORTANT NOTE: if a developer planId makes it into production, the device will NOT connect.
     // See electricimp.com/docs/manufacturing/planids/ for more info about planIDs
     #ifdef DEBUG
-        planId = ([[self.developerPlanId length] > 0) ? self.developerPlanId : nil;
+        planId = ([self.developerPlanId length] > 0) ? self.developerPlanId : nil;
     #endif
     
     if (self.generatePlanId || planId == nil) {
@@ -224,8 +224,10 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         [pluginResult setBlinkUpError:error];
     }
     else {
-        // cache plan ID (see electricimp.com/docs/manufacturing/planids/)
-        [[NSUserDefaults standardUserDefaults] setObject:deviceInfo.planId forKey:PLAN_ID_CACHE_KEY];
+        // cache plan ID if it's not development ID (see electricimp.com/docs/manufacturing/planids/)
+        if (![deviceInfo.planId isEqual: self.developerPlanId]) {
+            [[NSUserDefaults standardUserDefaults] setObject:deviceInfo.planId forKey:PLAN_ID_CACHE_KEY];
+        }
         
         pluginResult.state = Completed;
         pluginResult.statusCode = DEVICE_CONNECTED;
