@@ -142,7 +142,14 @@ public class BlinkUpPlugin extends CordovaPlugin {
             editor.apply();
 
             BlinkUpPlugin.clearedCache = true;
-            BlinkupController.getInstance().clearDevice(this.cordova.getActivity());
+
+            // default is to run on WebCore thread, clearing shows UI so needs UI thread
+            this.cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    BlinkupController.getInstance().clearDevice(cordova.getActivity());
+                }
+            });
         }
 
         return true;
