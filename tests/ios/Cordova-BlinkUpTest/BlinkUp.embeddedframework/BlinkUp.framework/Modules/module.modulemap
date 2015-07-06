@@ -1,0 +1,6 @@
+framework module BlinkUp {
+  umbrella header "BlinkUp.h"
+
+  export *
+  module * { export * }
+}
