@@ -13,7 +13,9 @@ A sample Cordova app that demonstrates how to integrate the plugin can be found 
 **[Using the Plugin](#using-the-plugin)**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[API Calls](#api-calls)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Callbacks](#callbacks)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[Testing the Plugin](#testing-the-plugin)<br>
+**[Testing the Plugin](#testing-the-plugin)**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Developer Plan ID's](#developer-plan-ids)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Unit Tests](#cordova-unit-tests)<br>
 **[JSON Format](#json-format)**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Status Codes](#status-codes)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Error Codes](#error-codes)<br>
@@ -140,12 +142,30 @@ var callback = function (message) {
 ```
 
 Testing the Plugin
+===========
+Developer Plan IDs
 -----------
 If you are testing devices for development, you can input your own development planID to see the Imps in the Electric Imp IDE. Just set it in the `index.js` files when making a call to `invokeBlinkUp` and ensure you pass *false* for `generateNewPlanId`. The development plan ID you set will override a cached plan ID (if there is one) if `generateNewPlanId` is false. If `generateNewPlanId` is true however, a new plan ID will be generated every BlinkUp and the development plan ID will be ignored.
 
 When you pass in a development plan ID, the plugin will not cache it. Caching is only done on production plan ID's, and is used to save user settings across BlinkUp's (e.g. when they change their wifi password).
 
 IMPORTANT NOTE: if a development plan ID makes it into production, the consumer's device will not configure, and will be unable to connect to wifi. There is a check in the native code on each platform which will ignore a development plan ID if the build configuration is set to release, but it is best to remove all references to the plan ID and pass an empty string from the Javascript when you're done debugging. Please read http://electricimp.com/docs/manufacturing/planids/ for more info.
+
+Cordova Unit Tests
+-----------
+There are a set of unit tests for the BlinkUp plugin based on the `cordova-plugin-test-framework` that test for the correct JSON results for certain actions. If you wish to use the tests, do the following steps from your Cordova project directory.
+
+**Step 1**<br>
+Install the test framework with `cordova plugin add http://git-wip-us.apache.org/repos/asf/cordova-plugin-test-framework.git` 
+
+**Step 2**<br>
+Install the BlinkUp plugin tests with `cordova plugin add https://github.com/Macadamian/Cordova-BlinkUpPlugin.git#:/tests`
+
+**Step 3**<br>
+Open `config.xml` and change `<content src="index.html"/>` to `<content src="cdvtests/index.html"/>` or navigate to `cdvtests/index.html` from your app.
+
+For more info about testing Cordova plugins, please visit [the test framework repo](https://github.com/apache/cordova-plugin-test-framework).
+
 
 JSON Format
 ===========
@@ -169,10 +189,10 @@ The plugin will return a JSON string in the following format. Footnotes in squar
 ```
 [1] - *started*: flashing process has finished, waiting for device info from Electric Imp servers<br>
 *completed*: Plugin done executing. This could be a clear-wifi completed or device info from servers has arrived<br>
-[2] - Status of plugin. Null if state is "error". See "Status Codes" below for status codes<br>
+[2] - Status of plugin. Null if state is "error". See [Status Codes](#status-codes) below for status codes<br>
 [3] - Stores error information if state is "error". Null if state is "started" or "completed"<br>
 [4] - If error sent from SDK, "blinkup". If error handled within native code of plugin, "plugin"<br>
-[5] - BlinkUp SDK error code if errorType is "blinkup". Custom error code if "plugin". See "Error Codes" below for custom error codes.<br>
+[5] - BlinkUp SDK error code if errorType is "blinkup". Custom error code if "plugin". See [Error Codes](#error-codes) below for custom error codes.<br>
 [6] - If errorType is "blinkup", error message from BlinkUp SDK. Null if errorType "plugin"<br>
 [7] - Stores the deviceInfo from the Electric Imp servers. Null if state is "started" or "error"
 
