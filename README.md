@@ -193,7 +193,7 @@ IMPORTANT NOTE: the following codes apply ONLY if `errorType` is "plugin". Error
 100 - "Invalid arguments in call to invokeBlinkUp."
 101 - "Could not gather device info. Process timed out."
 102 - "Process cancelled by user."
-300 - "Invalid API key. You must set your BlinkUp API key in index.js." 
+103 - "Invalid API key. You must set your BlinkUp API key in index.js." 
 301 - "Could not verify API key with Electric Imp servers."
 302 - "Error generating JSON string."
 ```
