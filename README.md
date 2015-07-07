@@ -3,6 +3,8 @@ Introduction
 
 This Cordova / Phonegap plugin allows you to easily integrate the native BlinkUp process to connect an Electric Imp device to the internet in your app. Note that because the BlinkUp SDK is private, you will need to add it to your project after installing the plugin. If you do not have access to the BlinkUp SDK, you may contact Electric Imp at sales@electricimp.com.
 
+A sample Cordova app that demonstrates how to integrate the plugin can be found at https://github.com/Macadamian/Cordova-BlinkUpSample.
+
 ## Table of Contents
 
 **[Installation](#installation)**<br>
@@ -85,12 +87,12 @@ There are three calls from the plugin exposed to the javascript through the `bli
 
 All calls take success and failure callbacks as arguments. See the "Callbacks" section below for more information.
 
-**invokeBlinkUp(apiKey, planId, timeoutMs, generatePlanId, success, failure)**<br>
+**invokeBlinkUp(apiKey, planId, timeoutMs, generateNewPlanId, success, failure)**<br>
 Presents the native BlinkUp interface, where user can input wifi info and connect to the Imp.<br>
 `apiKey` *string*: you must enter your apiKey or the plugin won't function.<br>
-`planId` *string*: optional, see "Testing the Plugin" below.<br>
-`timeoutMs` *integer*: how long to wait for device info from servers, default is 30000 (1 min).<br>
-`generatePlanId` *boolean*: Set to true if you want to generate a new plan ID every BlinkUp. See https://electricimp.com/docs/manufacturing/planids/ for more info about plan IDs.<br>
+`developmentPlanId` *string, default=""*: **IMPORTANT** - you must read "[Testing the Plugin](#testing-the-plugin)" before setting this value. Failure to do so can prevent users from connecting to wifi.<br>
+`timeoutMs` *integer, default=30000*: how long to wait for device info from servers.<br>
+`generateNewPlanId` *boolean, default=false*: Set to true if you want to generate a new plan ID every BlinkUp. See https://electricimp.com/docs/manufacturing/planids/ for more info.<br>
 
 **abortBlinkUp(success, failure)**<br>
 Cancels server polling for device info if in progress. 
@@ -102,7 +104,7 @@ Callbacks
 ----------
 It is recommended to use the same function as the success callback and failure callback, as the JSON parsing will be common to both. See the "JSON format" section for information regarding the JSON sent back to the javascript.
 
-An example callback function is below, where `errorForCode` and `statusForCode` are functions you must define that map error codes and status codes to their respective messages.
+An example callback function is below, where `errorForCode` and `statusForCode` are functions you must define that map [error codes](#error-codes) and [status codes](#status-codes) to their respective messages.
 ```javascript
 var callback = function (message) {
     try {
@@ -139,9 +141,11 @@ var callback = function (message) {
 
 Testing the Plugin
 -----------
-If you are testing devices for development, you can input your own development planID to see the Imps in the Electric Imp IDE. Just set it in the `index.js` files when performing the above step, and make sure you pass *false* for `generatePlanId`.<br>
+If you are testing devices for development, you can input your own development planID to see the Imps in the Electric Imp IDE. Just set it in the `index.js` files when making a call to `invokeBlinkUp` and ensure you pass *false* for `generateNewPlanId`. The development plan ID you set will override a cached plan ID (if there is one) if `generateNewPlanId` is false. If `generateNewPlanId` is true however, a new plan ID will be generated every BlinkUp and the development plan ID will be ignored.
 
-IMPORTANT NOTE: if a development planID makes it into production, the consumer's device will not configure. Please read http://electricimp.com/docs/manufacturing/planids/ for more info.
+When you pass in a development plan ID, the plugin will not cache it. Caching is only done on production plan ID's, and is used to save user settings across BlinkUp's (e.g. when they change their wifi password).
+
+IMPORTANT NOTE: if a development plan ID makes it into production, the consumer's device will not configure, and will be unable to connect to wifi. There is a check in the native code on each platform which will ignore a development plan ID if the build configuration is set to release, but it is best to remove all references to the plan ID and pass an empty string from the Javascript when you're done debugging. Please read http://electricimp.com/docs/manufacturing/planids/ for more info.
 
 JSON Format
 ===========

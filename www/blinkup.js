@@ -18,9 +18,9 @@
 /*global cordova, module*/
 
 module.exports = {
-    //apiKey: string, developerPlanId: string, timeoutMs: int, generatePlanId: bool 
-    invokeBlinkUp: function (apiKey, developerPlanId, timeoutMs, generatePlanId, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "invokeBlinkUp", [apiKey, developerPlanId, timeoutMs, generatePlanId]);
+    //apiKey: string, developerPlanId: string, timeoutMs: int, generateNewPlanId: bool 
+    invokeBlinkUp: function (apiKey, developerPlanId, timeoutMs, generateNewPlanId, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "invokeBlinkUp", [apiKey, developerPlanId, timeoutMs, generateNewPlanId]);
     },
     abortBlinkUp: function (successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "abortBlinkUp", []);
