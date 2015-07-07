@@ -154,7 +154,7 @@ public class BlinkUpPluginResult {
         }
 
         PluginResult pluginResult = new PluginResult(cordovaResultStatus, resultJSON.toString());
-        pluginResult.setKeepCallback(this.state == BlinkUpPluginState.Started);
+        pluginResult.setKeepCallback(true); // uses same BlinkUpPlugin object across calls, so need to keep callback
         BlinkUpPlugin.callbackContext.sendPluginResult(pluginResult);
     }
 
