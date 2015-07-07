@@ -60,18 +60,11 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
         self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
-        // check for correct api Key format
-        if (![self isApiKeyFormatValid]) {
-            BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
-            pluginResult.state = Error;
-            [pluginResult setPluginError:INVALID_API_KEY];
-            
-            [self sendResultToCallback:pluginResult];
+        if ([self sendErrorIfArgumentsInvalid]) {
             return;
         }
         
         NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)self.timeoutMs);
-        
         [self navigateToBlinkUpView];
     }];
 }
@@ -238,18 +231,49 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 
     [self sendResultToCallback:pluginResult];
 }
+  
+/*********************************************************
+ * Sends error to callback if arguments don't have correct
+ * type, or if apiKey is invalid format.
+ * @return YES if error was sent, NO otherwise
+ ********************************************************/
+- (BOOL) sendErrorIfArgumentsInvalid {
+
+    BOOL invalidArguments = NO;
+    BOOL invalidApiKey = NO;
+
+    // check for error
+    if (self.timeoutMs == 0) {
+        invalidArguments = YES;
+    }
+    if ([self isApiKeyFormatValid:self.apiKey]) {
+        invalidApiKey = YES;
+    }
+    
+    // send error to callback
+    if (invalidArguments || invalidApiKey) {
+        BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
+        pluginResult.state = Error;
+
+        [pluginResult setPluginError:(invalidApiKey ? INVALID_API_KEY : INVALID_ARGUMENTS)];
+
+        [self sendResultToCallback:pluginResult];
+    }
+    
+    return (invalidArguments || invalidApiKey);
+}
                    
 /*********************************************************
  * Returns true iff api key is 32 alphanumeric characters
  ********************************************************/
-- (BOOL) isApiKeyFormatValid {
-    if (self.apiKey == nil || self.apiKey.length != 32) {
+- (BOOL) isApiKeyFormatValid: (NSString *)apiKey {
+    if (apiKey == nil || apiKey.length != 32) {
         return NO;
     }
     
     // must be only alphanumeric characters
     NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
-    return [[self.apiKey stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
+    return [[apiKey stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
 }
 
 /*********************************************************
