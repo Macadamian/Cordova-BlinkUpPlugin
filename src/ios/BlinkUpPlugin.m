@@ -55,23 +55,13 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     self.callbackId = command.callbackId;
 
     [self.commandDelegate runInBackground:^{
-        // check for correct number of arguments
-        if (command.arguments.count <= BlinkUpArgumentGeneratePlanId) {
-            BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
-            pluginResult.state = Error;
-            [pluginResult setPluginError:INVALID_ARGUMENTS];
-
-            [self sendResultToCallback:pluginResult];
-            return;
-        }
-
         self.apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
         self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentPlanId];
         self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
         self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
         // check for correct api Key format
-        if (![self apiKeyFormatValid]) {
+        if (![self isApiKeyFormatValid]) {
             BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
             pluginResult.state = Error;
             [pluginResult setPluginError:INVALID_API_KEY];
@@ -250,7 +240,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 /*********************************************************
  * Returns true iff api key is 32 alphanumeric characters
  ********************************************************/
-- (BOOL) apiKeyFormatValid {
+- (BOOL) isApiKeyFormatValid {
     if (self.apiKey == nil || self.apiKey.length != 32) {
         return NO;
     }
