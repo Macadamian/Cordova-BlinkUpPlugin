@@ -1,0 +1,526 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A6C333DB1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C333CF1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a */; };
+		A6C333F01B4D6EC400FFEDC5 /* BlinkUpTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333EF1B4D6EC400FFEDC5 /* BlinkUpTest.m */; };
+		A6C333F41B4D6F2B00FFEDC5 /* BlinkUpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F11B4D6F2B00FFEDC5 /* BlinkUpPlugin.m */; };
+		A6C333F51B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F21B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m */; };
+		A6C333F61B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F31B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m */; };
+		A6C333FF1B4D6F8D00FFEDC5 /* libCordova.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C333EE1B4D6E8500FFEDC5 /* libCordova.a */; };
+		A6C334561B4D92C300FFEDC5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334541B4D92B100FFEDC5 /* AVFoundation.framework */; };
+		A6C334581B4D92CA00FFEDC5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334571B4D92CA00FFEDC5 /* SystemConfiguration.framework */; };
+		A6C334591B4D92CE00FFEDC5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334521B4D926200FFEDC5 /* Security.framework */; };
+		A6C3345B1B4D92D300FFEDC5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C3345A1B4D92D300FFEDC5 /* QuartzCore.framework */; };
+		A6C3345D1B4D92D800FFEDC5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C3345C1B4D92D800FFEDC5 /* OpenGLES.framework */; };
+		A6C3345F1B4D92DD00FFEDC5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C3345E1B4D92DD00FFEDC5 /* CoreGraphics.framework */; };
+		A6C334611B4D92E200FFEDC5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334601B4D92E200FFEDC5 /* UIKit.framework */; };
+		A6C334631B4D92E900FFEDC5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334621B4D92E900FFEDC5 /* Foundation.framework */; };
+		A6C334641B4D930400FFEDC5 /* BlinkUpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F11B4D6F2B00FFEDC5 /* BlinkUpPlugin.m */; };
+		A6C334651B4D930400FFEDC5 /* BlinkUpPluginResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F21B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m */; };
+		A6C334661B4D930400FFEDC5 /* BUDeviceInfo+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C333F31B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m */; };
+		A6C334681B4D96B600FFEDC5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C334571B4D92CA00FFEDC5 /* SystemConfiguration.framework */; };
+		A6C334711B4DAAB500FFEDC5 /* BlinkUp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C3346E1B4DAAB500FFEDC5 /* BlinkUp.framework */; };
+		A6C334721B4DAAD800FFEDC5 /* BlinkUp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C3346E1B4DAAB500FFEDC5 /* BlinkUp.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A6C333DC1B4D6E6600FFEDC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6C333C71B4D6E6600FFEDC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6C333CE1B4D6E6600FFEDC5;
+			remoteInfo = "Cordova-BlinkUpTest";
+		};
+		A6C333ED1B4D6E8500FFEDC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6C333E91B4D6E8400FFEDC5 /* CordovaLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 68A32D7114102E1C006B237C;
+			remoteInfo = CordovaLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A6C333CD1B4D6E6600FFEDC5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A6C333CF1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCordova-BlinkUpTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6C333DA1B4D6E6600FFEDC5 /* Cordova-BlinkUpTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cordova-BlinkUpTestTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6C333E01B4D6E6600FFEDC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6C333E91B4D6E8400FFEDC5 /* CordovaLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CordovaLib.xcodeproj; path = "../node_modules/cordova-ios/CordovaLib/CordovaLib.xcodeproj"; sourceTree = "<group>"; };
+		A6C333EF1B4D6EC400FFEDC5 /* BlinkUpTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlinkUpTest.m; sourceTree = "<group>"; wrapsLines = 0; };
+		A6C333F11B4D6F2B00FFEDC5 /* BlinkUpPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlinkUpPlugin.m; path = ../../../../src/ios/BlinkUpPlugin.m; sourceTree = "<group>"; };
+		A6C333F21B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlinkUpPluginResult.m; path = ../../../../src/ios/BlinkUpPluginResult.m; sourceTree = "<group>"; };
+		A6C333F31B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "BUDeviceInfo+JSON.m"; path = "../../../../src/ios/BUDeviceInfo+JSON.m"; sourceTree = "<group>"; };
+		A6C333F71B4D6F3400FFEDC5 /* BlinkUpPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlinkUpPlugin.h; path = ../../../../src/ios/BlinkUpPlugin.h; sourceTree = "<group>"; };
+		A6C333F81B4D6F3400FFEDC5 /* BlinkUpPluginResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlinkUpPluginResult.h; path = ../../../../src/ios/BlinkUpPluginResult.h; sourceTree = "<group>"; };
+		A6C333F91B4D6F3400FFEDC5 /* BUDeviceInfo+JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "BUDeviceInfo+JSON.h"; path = "../../../../src/ios/BUDeviceInfo+JSON.h"; sourceTree = "<group>"; };
+		A6C334521B4D926200FFEDC5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A6C334541B4D92B100FFEDC5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A6C334571B4D92CA00FFEDC5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A6C3345A1B4D92D300FFEDC5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A6C3345C1B4D92D800FFEDC5 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		A6C3345E1B4D92DD00FFEDC5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A6C334601B4D92E200FFEDC5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A6C334621B4D92E900FFEDC5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A6C3346E1B4DAAB500FFEDC5 /* BlinkUp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BlinkUp.framework; sourceTree = "<group>"; };
+		A6C334701B4DAAB500FFEDC5 /* BlinkUp.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BlinkUp.bundle; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A6C333CC1B4D6E6600FFEDC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6C334711B4DAAB500FFEDC5 /* BlinkUp.framework in Frameworks */,
+				A6C334631B4D92E900FFEDC5 /* Foundation.framework in Frameworks */,
+				A6C334611B4D92E200FFEDC5 /* UIKit.framework in Frameworks */,
+				A6C3345F1B4D92DD00FFEDC5 /* CoreGraphics.framework in Frameworks */,
+				A6C3345D1B4D92D800FFEDC5 /* OpenGLES.framework in Frameworks */,
+				A6C3345B1B4D92D300FFEDC5 /* QuartzCore.framework in Frameworks */,
+				A6C334591B4D92CE00FFEDC5 /* Security.framework in Frameworks */,
+				A6C334581B4D92CA00FFEDC5 /* SystemConfiguration.framework in Frameworks */,
+				A6C334561B4D92C300FFEDC5 /* AVFoundation.framework in Frameworks */,
+				A6C333FF1B4D6F8D00FFEDC5 /* libCordova.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6C333D71B4D6E6600FFEDC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6C334681B4D96B600FFEDC5 /* SystemConfiguration.framework in Frameworks */,
+				A6C334721B4DAAD800FFEDC5 /* BlinkUp.framework in Frameworks */,
+				A6C333DB1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A6C333C61B4D6E6600FFEDC5 = {
+			isa = PBXGroup;
+			children = (
+				A6C333E91B4D6E8400FFEDC5 /* CordovaLib.xcodeproj */,
+				A6C333D11B4D6E6600FFEDC5 /* Cordova-BlinkUpLib */,
+				A6C334671B4D932B00FFEDC5 /* Frameworks */,
+				A6C333DE1B4D6E6600FFEDC5 /* Cordova-BlinkUpLibTests */,
+				A6C333D01B4D6E6600FFEDC5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A6C333D01B4D6E6600FFEDC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6C333CF1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a */,
+				A6C333DA1B4D6E6600FFEDC5 /* Cordova-BlinkUpTestTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6C333D11B4D6E6600FFEDC5 /* Cordova-BlinkUpLib */ = {
+			isa = PBXGroup;
+			children = (
+				A6C333F71B4D6F3400FFEDC5 /* BlinkUpPlugin.h */,
+				A6C333F11B4D6F2B00FFEDC5 /* BlinkUpPlugin.m */,
+				A6C333F81B4D6F3400FFEDC5 /* BlinkUpPluginResult.h */,
+				A6C333F21B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m */,
+				A6C333F91B4D6F3400FFEDC5 /* BUDeviceInfo+JSON.h */,
+				A6C333F31B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m */,
+			);
+			name = "Cordova-BlinkUpLib";
+			path = "Cordova-BlinkUpTest";
+			sourceTree = "<group>";
+		};
+		A6C333DE1B4D6E6600FFEDC5 /* Cordova-BlinkUpLibTests */ = {
+			isa = PBXGroup;
+			children = (
+				A6C333EF1B4D6EC400FFEDC5 /* BlinkUpTest.m */,
+				A6C333DF1B4D6E6600FFEDC5 /* Supporting Files */,
+			);
+			name = "Cordova-BlinkUpLibTests";
+			path = "Cordova-BlinkUpTestTests";
+			sourceTree = "<group>";
+		};
+		A6C333DF1B4D6E6600FFEDC5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A6C333E01B4D6E6600FFEDC5 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A6C333EA1B4D6E8400FFEDC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6C333EE1B4D6E8500FFEDC5 /* libCordova.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6C334671B4D932B00FFEDC5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A6C3346D1B4DAAB500FFEDC5 /* BlinkUp.embeddedframework */,
+				A6C334621B4D92E900FFEDC5 /* Foundation.framework */,
+				A6C334601B4D92E200FFEDC5 /* UIKit.framework */,
+				A6C3345E1B4D92DD00FFEDC5 /* CoreGraphics.framework */,
+				A6C3345C1B4D92D800FFEDC5 /* OpenGLES.framework */,
+				A6C3345A1B4D92D300FFEDC5 /* QuartzCore.framework */,
+				A6C334571B4D92CA00FFEDC5 /* SystemConfiguration.framework */,
+				A6C334541B4D92B100FFEDC5 /* AVFoundation.framework */,
+				A6C334521B4D926200FFEDC5 /* Security.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A6C3346D1B4DAAB500FFEDC5 /* BlinkUp.embeddedframework */ = {
+			isa = PBXGroup;
+			children = (
+				A6C3346E1B4DAAB500FFEDC5 /* BlinkUp.framework */,
+				A6C3346F1B4DAAB500FFEDC5 /* Resources */,
+			);
+			path = BlinkUp.embeddedframework;
+			sourceTree = "<group>";
+		};
+		A6C3346F1B4DAAB500FFEDC5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A6C334701B4DAAB500FFEDC5 /* BlinkUp.bundle */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6C333CE1B4D6E6600FFEDC5 /* Cordova-BlinkUpTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6C333E31B4D6E6600FFEDC5 /* Build configuration list for PBXNativeTarget "Cordova-BlinkUpTest" */;
+			buildPhases = (
+				A6C333CB1B4D6E6600FFEDC5 /* Sources */,
+				A6C333CC1B4D6E6600FFEDC5 /* Frameworks */,
+				A6C333CD1B4D6E6600FFEDC5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Cordova-BlinkUpTest";
+			productName = "Cordova-BlinkUpTest";
+			productReference = A6C333CF1B4D6E6600FFEDC5 /* libCordova-BlinkUpTest.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		A6C333D91B4D6E6600FFEDC5 /* Cordova-BlinkUpTestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6C333E61B4D6E6600FFEDC5 /* Build configuration list for PBXNativeTarget "Cordova-BlinkUpTestTests" */;
+			buildPhases = (
+				A6C333D61B4D6E6600FFEDC5 /* Sources */,
+				A6C333D71B4D6E6600FFEDC5 /* Frameworks */,
+				A6C333D81B4D6E6600FFEDC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6C333DD1B4D6E6600FFEDC5 /* PBXTargetDependency */,
+			);
+			name = "Cordova-BlinkUpTestTests";
+			productName = "Cordova-BlinkUpTestTests";
+			productReference = A6C333DA1B4D6E6600FFEDC5 /* Cordova-BlinkUpTestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A6C333C71B4D6E6600FFEDC5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = Macadamian;
+				TargetAttributes = {
+					A6C333CE1B4D6E6600FFEDC5 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					A6C333D91B4D6E6600FFEDC5 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = A6C333CA1B4D6E6600FFEDC5 /* Build configuration list for PBXProject "Cordova-BlinkUpTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A6C333C61B4D6E6600FFEDC5;
+			productRefGroup = A6C333D01B4D6E6600FFEDC5 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = A6C333EA1B4D6E8400FFEDC5 /* Products */;
+					ProjectRef = A6C333E91B4D6E8400FFEDC5 /* CordovaLib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				A6C333CE1B4D6E6600FFEDC5 /* Cordova-BlinkUpTest */,
+				A6C333D91B4D6E6600FFEDC5 /* Cordova-BlinkUpTestTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		A6C333EE1B4D6E8500FFEDC5 /* libCordova.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libCordova.a;
+			remoteRef = A6C333ED1B4D6E8500FFEDC5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A6C333D81B4D6E6600FFEDC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A6C333CB1B4D6E6600FFEDC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6C333F41B4D6F2B00FFEDC5 /* BlinkUpPlugin.m in Sources */,
+				A6C333F61B4D6F2B00FFEDC5 /* BUDeviceInfo+JSON.m in Sources */,
+				A6C333F51B4D6F2B00FFEDC5 /* BlinkUpPluginResult.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6C333D61B4D6E6600FFEDC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6C333F01B4D6EC400FFEDC5 /* BlinkUpTest.m in Sources */,
+				A6C334641B4D930400FFEDC5 /* BlinkUpPlugin.m in Sources */,
+				A6C334651B4D930400FFEDC5 /* BlinkUpPluginResult.m in Sources */,
+				A6C334661B4D930400FFEDC5 /* BUDeviceInfo+JSON.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A6C333DD1B4D6E6600FFEDC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6C333CE1B4D6E6600FFEDC5 /* Cordova-BlinkUpTest */;
+			targetProxy = A6C333DC1B4D6E6600FFEDC5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A6C333E11B4D6E6600FFEDC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A6C333E21B4D6E6600FFEDC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A6C333E41B4D6E6600FFEDC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework/**",
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A6C333E51B4D6E6600FFEDC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework/**",
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A6C333E71B4D6E6600FFEDC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Cordova-BlinkUpTestTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A6C333E81B4D6E6600FFEDC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					/Users/sdouglas/Documents/BlinkUp,
+					SDKs/BlinkUp.embeddedframework,
+					"$(PROJECT_DIR)/BlinkUp.embeddedframework",
+				);
+				INFOPLIST_FILE = "Cordova-BlinkUpTestTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A6C333CA1B4D6E6600FFEDC5 /* Build configuration list for PBXProject "Cordova-BlinkUpTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6C333E11B4D6E6600FFEDC5 /* Debug */,
+				A6C333E21B4D6E6600FFEDC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6C333E31B4D6E6600FFEDC5 /* Build configuration list for PBXNativeTarget "Cordova-BlinkUpTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6C333E41B4D6E6600FFEDC5 /* Debug */,
+				A6C333E51B4D6E6600FFEDC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6C333E61B4D6E6600FFEDC5 /* Build configuration list for PBXNativeTarget "Cordova-BlinkUpTestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6C333E71B4D6E6600FFEDC5 /* Debug */,
+				A6C333E81B4D6E6600FFEDC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A6C333C71B4D6E6600FFEDC5 /* Project object */;
+}

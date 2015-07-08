@@ -13,7 +13,14 @@ A sample Cordova app that demonstrates how to integrate the plugin can be found 
 **[Using the Plugin](#using-the-plugin)**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[API Calls](#api-calls)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Callbacks](#callbacks)<br>
+<<<<<<< HEAD
 &nbsp;&nbsp;&nbsp;&nbsp;[Testing the Plugin](#testing-the-plugin)<br>
+=======
+**[Testing the Plugin](#testing-the-plugin)**<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Developer Plan ID's](#developer-plan-ids)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Cordova Unit Tests](#cordova-unit-tests)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[iOS Unit Tests](#ios-unit-tests)<br>
+>>>>>>> added iOS native unit testing project
 **[JSON Format](#json-format)**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Status Codes](#status-codes)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[Error Codes](#error-codes)<br>
@@ -147,6 +154,28 @@ When you pass in a development plan ID, the plugin will not cache it. Caching is
 
 IMPORTANT NOTE: if a development plan ID makes it into production, the consumer's device will not configure, and will be unable to connect to wifi. There is a check in the native code on each platform which will ignore a development plan ID if the build configuration is set to release, but it is best to remove all references to the plan ID and pass an empty string from the Javascript when you're done debugging. Please read http://electricimp.com/docs/manufacturing/planids/ for more info.
 
+<<<<<<< HEAD
+=======
+Cordova Unit Tests
+-----------
+There are a set of unit tests for the BlinkUp plugin based on the `cordova-plugin-test-framework` that test if the BlinkUp interface is properly defined in the Javascript. If you wish to use the tests, do the following steps from your Cordova project directory.
+
+**Step 1**<br>
+Install the test framework with `cordova plugin add http://git-wip-us.apache.org/repos/asf/cordova-plugin-test-framework.git` 
+
+**Step 2**<br>
+Install the BlinkUp plugin tests with `cordova plugin add https://github.com/Macadamian/Cordova-BlinkUpPlugin.git#:/tests`
+
+**Step 3**<br>
+Open `config.xml` and change `<content src="index.html"/>` to `<content src="cdvtests/index.html"/>` or navigate to `cdvtests/index.html` from your app.
+
+For more info about testing Cordova plugins, please visit [the test framework repo](https://github.com/apache/cordova-plugin-test-framework).
+
+iOS Unit Tests
+-----------
+As well as the Cordova tests that ensure the plugin's interface is properly defined in Javascript, there are also native iOS tests to make sure that the correct error codes, status codes, and JSON format are received for different BlinkUp scenarios. Please see the ReadMe in `tests/ios` for more information.
+
+>>>>>>> added iOS native unit testing project
 JSON Format
 ===========
 The plugin will return a JSON string in the following format. Footnotes in square brackets.
