@@ -26,6 +26,7 @@ import org.json.JSONObject;
 // see README.md for format of JSON string to be sent to callback
 
 public class BlinkUpPluginResult {
+    private static final String TAG = "BlinkUpPluginResult";
 
     // possible states
     public enum BlinkUpPluginState {
@@ -150,7 +151,7 @@ public class BlinkUpPluginResult {
             }
         } catch (JSONException e) {
             // don't want endless loop calling ourselves so just log error (don't send to callback)
-            Log.e("BlinkUpPlugin", e.getMessage());
+            Log.e(TAG, "", e);
         }
 
         PluginResult pluginResult = new PluginResult(cordovaResultStatus, resultJSON.toString());

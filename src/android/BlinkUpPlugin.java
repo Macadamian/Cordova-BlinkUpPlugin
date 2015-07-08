@@ -20,14 +20,15 @@ package com.macadamian.blinkup;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import com.electricimp.blinkup.BlinkupController;
 
-import org.apache.cordova.*;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /*********************************************
  * execute() called from Javascript interface,
@@ -35,19 +36,20 @@ import org.apache.cordova.*;
  * BlinkUpPlugin interface from the SDK
  ********************************************/
 public class BlinkUpPlugin extends CordovaPlugin {
+    private static final String TAG = "BlinkUpPlugin";
+
+    // accessed from BlinkUpCompleteActivity and ClearCompleteActivity
+    static int timeoutMs = 30000;
+    static CallbackContext callbackContext;
+
+    static final String PLAN_ID_CACHE_KEY = "planId";
+    static final String PLAN_ID_CACHE_NAME = "DefaultPreferences";
+    static boolean clearedCache = false;
+    static String developerPlanId; // don't want to cache planId if development
 
     // only needed in this class
     private String apiKey;
     private Boolean generatePlanId = false;
-
-    // accessed from BlinkUpCompleteActivity and ClearCompleteActivity
-    public static int timeoutMs = 30000;
-    public static CallbackContext callbackContext;
-
-    public static String PLAN_ID_CACHE_KEY = "planId";
-    public static String PLAN_ID_CACHE_NAME = "DefaultPreferences";
-    public static boolean clearedCache = false;
-    public static String developerPlanId; // don't want to cache planId if development
 
     public enum StatusCodes {
         DEVICE_CONNECTED(0),
@@ -73,10 +75,10 @@ public class BlinkUpPlugin extends CordovaPlugin {
     }
 
     // argument indexes from Cordova javascript
-    final int BlinkUpArgumentApiKey = 0;
-    final int BlinkUpArgumentDeveloperPlanId = 1;
-    final int BlinkUpArgumentTimeOut = 2;
-    final int BlinkUpArgumentGeneratePlanId = 3;
+    private static final int BlinkUpArgumentApiKey = 0;
+    private static final int BlinkUpArgumentDeveloperPlanId = 1;
+    private static final int BlinkUpArgumentTimeOut = 2;
+    private static final int BlinkUpArgumentGeneratePlanId = 3;
 
     /**********************************************************
      * method called by Cordova javascript
@@ -94,10 +96,10 @@ public class BlinkUpPlugin extends CordovaPlugin {
         // starting blinkup
         if (action.equalsIgnoreCase("invokeBlinkUp")) {
             try {
-                this.apiKey = data.getString(BlinkUpArgumentApiKey);
-                this.developerPlanId = data.getString(BlinkUpArgumentDeveloperPlanId);
+                apiKey = data.getString(BlinkUpArgumentApiKey);
+                developerPlanId = data.getString(BlinkUpArgumentDeveloperPlanId);
                 timeoutMs = data.getInt(BlinkUpArgumentTimeOut);
-                this.generatePlanId = data.getBoolean(BlinkUpArgumentGeneratePlanId);
+                generatePlanId = data.getBoolean(BlinkUpArgumentGeneratePlanId);
             } catch (JSONException exc) {
                 BlinkUpPluginResult argErrorResult = new BlinkUpPluginResult();
                 argErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
@@ -141,7 +143,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
             editor.putString(PLAN_ID_CACHE_KEY, null);
             editor.apply();
 
-            BlinkUpPlugin.clearedCache = true;
+            clearedCache = true;
 
             // default is to run on WebCore thread, clearing shows UI so needs UI thread
             this.cordova.getActivity().runOnUiThread(new Runnable() {
@@ -167,7 +169,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
             @Override
             public void onError(String s) {
-                Log.e("BlinkUpPlugin", s);
+                Log.e(TAG, s);
             }
         };
 
@@ -183,30 +185,30 @@ public class BlinkUpPlugin extends CordovaPlugin {
         };
 
         // load cached planId if available. Otherwise, SDK generates new one automatically
-        if (!this.generatePlanId) {
-            SharedPreferences preferences = this.cordova.getActivity().getSharedPreferences(PLAN_ID_CACHE_NAME, Activity.MODE_PRIVATE);
+        if (!generatePlanId) {
+            SharedPreferences preferences = cordova.getActivity().getSharedPreferences(PLAN_ID_CACHE_NAME, Activity.MODE_PRIVATE);
             String planId = preferences.getString(PLAN_ID_CACHE_KEY, null);
             BlinkupController.getInstance().setPlanID(planId);
         }
 
         // see electricimp.com/docs/manufacturing/planids/ for info about planIDs
-        if (org.apache.cordova.BuildConfig.DEBUG && !this.generatePlanId) {
-            BlinkupController.getInstance().setPlanID(this.developerPlanId);
+        if (org.apache.cordova.BuildConfig.DEBUG && !generatePlanId) {
+            BlinkupController.getInstance().setPlanID(developerPlanId);
         }
 
-        BlinkupController.getInstance().acquireSetupToken(this.cordova.getActivity(), this.apiKey, tokenAcquireCallback);
-        BlinkupController.getInstance().selectWifiAndSetupDevice(this.cordova.getActivity(), this.apiKey, serverErrorHandler);
+        BlinkupController.getInstance().acquireSetupToken(cordova.getActivity(), apiKey, tokenAcquireCallback);
+        BlinkupController.getInstance().selectWifiAndSetupDevice(cordova.getActivity(), apiKey, serverErrorHandler);
     }
 
     /**********************************************************
      * @return true if apiKey is 32 alpha-numeric characters
      *********************************************************/
     private boolean apiKeyFormatValid() {
-        if (this.apiKey == null || this.apiKey.length() != 32) {
+        if (TextUtils.isEmpty(apiKey) || TextUtils.getTrimmedLength(apiKey) != 32) {
             return false;
         }
 
         String isAlphaNumericPattern = "^[a-zA-Z0-9]*$";
-        return this.apiKey.matches(isAlphaNumericPattern);
+        return apiKey.matches(isAlphaNumericPattern);
     }
 }
