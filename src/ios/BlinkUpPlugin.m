@@ -126,8 +126,11 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     // load cached planID (if not cached yet, BlinkUp automatically generates a new one)
     NSString *planId = [[NSUserDefaults standardUserDefaults] objectForKey:PLAN_ID_CACHE_KEY];
 
-    // If running with debug build configuration, this will overwrite the planId from the cache
-    // with the one passed from Javascript. If empty string passed, a new planId will be generated.
+    // If generateNewPlanId is false and a planId is passed from the JS, this will overwrite
+    // the planId from the cache with the one passed from JS. This will only occur during debug builds.
+    //
+    // If the below ifdef is not evaluating to true, make sure that the project's Build Settings "Preprocessor
+    // Macros" section contains the following under the Debug section (and ONLY the debug section): DEBUG=1
     //
     // IMPORTANT NOTE: if a developer planId makes it into production, the device will NOT connect.
     // See electricimp.com/docs/manufacturing/planids/ for more info about planIDs
