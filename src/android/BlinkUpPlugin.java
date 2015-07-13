@@ -45,7 +45,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     static final String PLAN_ID_CACHE_KEY = "planId";
     static final String PLAN_ID_CACHE_NAME = "DefaultPreferences";
     static boolean clearedCache = false;
-    static String developerPlanId; // don't want to cache planId if development
+    static String developerPlanId;
 
     // only needed in this class
     private String apiKey;
@@ -65,7 +65,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
         INVALID_ARGUMENTS(100),
         PROCESS_TIMED_OUT(101),
         CANCELLED_BY_USER(102),
-        INVALID_API_KEY(103),
+        INVALID_API_KEY(300),
         VERIFY_API_KEY_FAIL(301), // android only
         JSON_ERROR(302);          // android only
 
