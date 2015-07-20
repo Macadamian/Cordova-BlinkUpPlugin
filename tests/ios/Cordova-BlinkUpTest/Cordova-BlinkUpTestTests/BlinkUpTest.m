@@ -19,7 +19,7 @@
 // categories that declare them
 //===========================================
 @interface BlinkUpPlugin (Testing)
-- (BOOL)isApiKeyFormatValid;
++ (BOOL)isApiKeyFormatValid:(NSString *)apiKey;
 - (void)navigateToBlinkUpView;
 - (void) deviceRequestDidCompleteWithDeviceInfo:(BUDeviceInfo*)deviceInfo timedOut:(BOOL)timedOut error:(NSError*)error;
 @end
@@ -61,32 +61,32 @@ BUDeviceInfo *deviceInfo;
  * for validating api keys works as expected
  ********************************************/
 - (void)testApiKeyFormatCheck {
-    BlinkUpPlugin *plugin = [[BlinkUpPlugin alloc] init];
-
+    NSString *testApiKey;
+    
     // api key is empty
-    plugin.apiKey = @"";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Empty api key invalid");
+    testApiKey = @"";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Empty api key invalid");
     
     // not 32 characters
-    plugin.apiKey = @"abcdefghijklmnopqrstuvwxyz";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Non-32 character api key invalid");
+    testApiKey = @"abcdefghijklmnopqrstuvwxyz";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Non-32 character api key invalid");
 
-    plugin.apiKey = @"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Non-32 character api key invalid");
+    testApiKey = @"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Non-32 character api key invalid");
 
     // not alpha-numeric
-    plugin.apiKey = @"*bcdefghijklmnopqrstuvwxyz123456";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Non-alphanumeric api key invalid, first char not alphanumeric");
+    testApiKey = @"*bcdefghijklmnopqrstuvwxyz123456";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Non-alphanumeric api key invalid, first char not alphanumeric");
    
-    plugin.apiKey = @"abcdefghijklmn*pqrstuvwxyz123456";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Non-alphanumeric api key invalid, middle char not alphanumeric");
+    testApiKey = @"abcdefghijklmn*pqrstuvwxyz123456";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Non-alphanumeric api key invalid, middle char not alphanumeric");
     
-    plugin.apiKey = @"abcdefghijklmnopqrstuvwxyz12345*";
-    XCTAssert(![plugin isApiKeyFormatValid], @"Non-alphanumeric api key invalid, last char not alphanumeric");
+    testApiKey = @"abcdefghijklmnopqrstuvwxyz12345*";
+    XCTAssert(![BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"Non-alphanumeric api key invalid, last char not alphanumeric");
 
     // valid api key
-    plugin.apiKey = @"abcdefghijklmnopqrstuvwxyz123456";
-    XCTAssert([plugin isApiKeyFormatValid], @"32 character, alphanumeric api key valid");
+    testApiKey = @"abcdefghijklmnopqrstuvwxyz123456";
+    XCTAssert([BlinkUpPlugin isApiKeyFormatValid:testApiKey], @"32 character, alphanumeric api key valid");
 }
 
 /********************************************
@@ -207,7 +207,14 @@ BUDeviceInfo *deviceInfo;
     BlinkUpPluginResult *pluginError = [[BlinkUpPluginResult alloc] init];
     pluginError.state = Error;
     [pluginError setPluginError:100];
-    NSString *pluginErrorJson = @"{\n  \"state\" : \"error\",\n  \"error\" : {\n    \"errorCode\" : \"100\",\n    \"errorType\" : \"plugin\"\n  }\n}";
+    NSString *pluginErrorJson =
+        @"{\n"
+         "  \"state\" : \"error\",\n"
+         "  \"error\" : {\n"
+         "    \"errorCode\" : \"100\",\n"
+         "    \"errorType\" : \"plugin\"\n"
+         "  }\n"
+         "}";
 
     XCTAssertEqualObjects(pluginErrorJson, [pluginError getResultsAsJsonString]);
 
@@ -215,7 +222,11 @@ BUDeviceInfo *deviceInfo;
     BlinkUpPluginResult *pluginSuccessStarted = [[BlinkUpPluginResult alloc] init];
     pluginSuccessStarted.state = Started;
     pluginSuccessStarted.statusCode = 200;
-    NSString *pluginSuccessStartedJson = @"{\n  \"state\" : \"started\",\n  \"statusCode\" : \"200\"\n}";
+    NSString *pluginSuccessStartedJson =
+        @"{\n"
+         "  \"state\" : \"started\",\n"
+         "  \"statusCode\" : \"200\"\n"
+         "}";
     
     XCTAssertEqualObjects(pluginSuccessStartedJson, [pluginSuccessStarted getResultsAsJsonString]);
 
@@ -224,7 +235,21 @@ BUDeviceInfo *deviceInfo;
     pluginSuccessCompleted.state = Completed;
     pluginSuccessCompleted.statusCode = 0;
     pluginSuccessCompleted.deviceInfo = deviceInfo;
-    NSString *pluginSuccessCompletedJson = [NSString stringWithFormat:@"{\n  \"state\" : \"completed\",\n  \"statusCode\" : \"0\",\n  \"deviceInfo\" : {\n    \"agentURL\" : \"%@\",\n    \"deviceId\" : \"%@\",\n    \"verificationDate\" : \"%@\",\n    \"planId\" : \"%@\"\n  }\n}",deviceInfo.agentURL.description, deviceInfo.deviceId, deviceInfo.verificationDate.description, deviceInfo.planId];
+    NSString *pluginSuccessCompletedJson = [NSString stringWithFormat:
+       @"{\n"
+        "  \"state\" : \"completed\",\n"
+        "  \"statusCode\" : \"0\",\n"
+        "  \"deviceInfo\" : {\n"
+        "    \"agentURL\" : \"%@\",\n"
+        "    \"deviceId\" : \"%@\",\n"
+        "    \"verificationDate\" : \"%@\",\n"
+        "    \"planId\" : \"%@\"\n"
+        "  }\n"
+        "}",
+        deviceInfo.agentURL.description,
+        deviceInfo.deviceId,
+        deviceInfo.verificationDate.description,
+        deviceInfo.planId];
     
     XCTAssertEqualObjects(pluginSuccessCompletedJson, [pluginSuccessCompleted getResultsAsJsonString]);
 }
