@@ -60,13 +60,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         _timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
         _generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
-        // check for correct api Key format
-        if (![self isApiKeyFormatValid]) {
-            BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
-            pluginResult.state = Error;
-            [pluginResult setPluginError:INVALID_API_KEY];
-            
-            [self sendResultToCallback:pluginResult];
+        if ([self sendErrorToCallbackIfArgumentsInvalid]) {
             return;
         }
         
@@ -131,9 +125,12 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     
     // load cached planID (if not cached yet, BlinkUp automatically generates a new one)
     NSString *planId = [[NSUserDefaults standardUserDefaults] objectForKey:PLAN_ID_CACHE_KEY];
-
-    // If running with debug build configuration, this will overwrite the planId from the cache
-    // with the one passed from Javascript. If empty string passed, a new planId will be generated.
+    
+    // If generateNewPlanId is false and a planId is passed from the JS, this will overwrite
+    // the planId from the cache with the one passed from JS. This will only occur during debug builds.
+    //
+    // If the below ifdef is not evaluating to true, make sure that the project's Build Settings "Preprocessor
+    // Macros" section contains the following under the Debug section (and ONLY the debug section): DEBUG=1
     //
     // IMPORTANT NOTE: if a developer planId makes it into production, the device will NOT connect.
     // See electricimp.com/docs/manufacturing/planids/ for more info about planIDs
@@ -194,11 +191,11 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     else {
         pluginResult.state = Completed;
         if (clearedCache) {
-        	pluginResult.statusCode = CLEAR_WIFI_AND_CACHE_COMPLETE;
-        } 
+            pluginResult.statusCode = CLEAR_WIFI_AND_CACHE_COMPLETE;
+        }
         else {
-        	pluginResult.statusCode = CLEAR_WIFI_COMPLETE;
-    	}
+            pluginResult.statusCode = CLEAR_WIFI_COMPLETE;
+        }
     }
     
     [self sendResultToCallback:pluginResult];
@@ -240,16 +237,26 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 }
                    
 /*********************************************************
- * Returns true iff api key is 32 alphanumeric characters
+ * Sends error to callback if arguments don't have correct
+ * type, or if apiKey is invalid format.
+ * @return YES if error was sent, NO otherwise
  ********************************************************/
-- (BOOL) isApiKeyFormatValid {
-    if (_apiKey == nil || _apiKey.length != 32) {
-        return NO;
+- (BOOL) sendErrorToCallbackIfArgumentsInvalid {
+    
+    BOOL invalidArguments = (self.timeoutMs == 0);
+    BOOL invalidApiKey = ![BlinkUpPlugin isApiKeyFormatValid:self.apiKey];
+    
+    // send error to callback
+    if (invalidArguments || invalidApiKey) {
+        BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
+        pluginResult.state = Error;
+        
+        [pluginResult setPluginError:(invalidApiKey ? INVALID_API_KEY : INVALID_ARGUMENTS)];
+        
+        [self sendResultToCallback:pluginResult];
     }
     
-    // must be only alphanumeric characters
-    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
-    return [[_apiKey stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
+    return (invalidArguments || invalidApiKey);
 }
 
 /*********************************************************
@@ -260,6 +267,19 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     CDVPluginResult *cordovaResult = [CDVPluginResult resultWithStatus:[pluginResult getCordovaStatus] messageAsString:[pluginResult getResultsAsJsonString]];
     [cordovaResult setKeepCallbackAsBool: [pluginResult getKeepCallback]];
     [self.commandDelegate sendPluginResult:cordovaResult callbackId:_callbackId];
+}
+
+/*********************************************************
+ * Returns true iff api key is 32 alphanumeric characters
+ ********************************************************/
++ (BOOL) isApiKeyFormatValid: (NSString *)apiKey {
+    if (apiKey == nil || apiKey.length != 32) {
+        return NO;
+    }
+    
+    // must be only alphanumeric characters
+    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
+    return ([[apiKey stringByTrimmingCharactersInSet:alphaSet] length] == 0);
 }
 
 @end
