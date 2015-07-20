@@ -52,13 +52,13 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 - (void)invokeBlinkUp:(CDVInvokedUrlCommand*)command {
     NSLog(@"invokeBlinkUp Started.");
 
-    self.callbackId = command.callbackId;
+    _callbackId = command.callbackId;
 
     [self.commandDelegate runInBackground:^{
-        self.apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
-        self.developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentDeveloperPlanId];
-        self.timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
-        self.generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
+        _apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
+        _developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentDeveloperPlanId];
+        _timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
+        _generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
 
         // check for correct api Key format
         if (![self isApiKeyFormatValid]) {
@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
             return;
         }
         
-        NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)self.timeoutMs);
+        NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)_timeoutMs);
         
         [self navigateToBlinkUpView];
     }];
@@ -82,11 +82,11 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 - (void)abortBlinkUp:(CDVInvokedUrlCommand *)command {
     NSLog(@"abortBlinkUp Started.");
 
-    self.callbackId = command.callbackId;
+    _callbackId = command.callbackId;
 
     [self.commandDelegate runInBackground:^{
-        [self.blinkUpController.devicePoller stopPolling];
-        self.blinkUpController = nil;
+        [_blinkUpController.devicePoller stopPolling];
+        _blinkUpController = nil;
 
         BlinkUpPluginResult *abortResult = [[BlinkUpPluginResult alloc] init];
         abortResult.state = Error;
@@ -102,7 +102,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 - (void) clearBlinkUpData:(CDVInvokedUrlCommand *)command {
     NSLog(@"clearBlinkUpData Started.");
 
-    self.callbackId = command.callbackId;
+    _callbackId = command.callbackId;
 
     [self.commandDelegate runInBackground:^{
         // clear cached planId
@@ -138,25 +138,25 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     // IMPORTANT NOTE: if a developer planId makes it into production, the device will NOT connect.
     // See electricimp.com/docs/manufacturing/planids/ for more info about planIDs
     #ifdef DEBUG
-        planId = ([self.developerPlanId length] > 0) ? self.developerPlanId : nil;
+        planId = ([_developerPlanId length] > 0) ? _developerPlanId : nil;
     #endif
     
-    if (self.generatePlanId || planId == nil) {
-        self.blinkUpController = [[BUBasicController alloc] initWithApiKey:self.apiKey];
+    if (_generatePlanId || planId == nil) {
+        _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey];
     }
     else {
-        self.blinkUpController = [[BUBasicController alloc] initWithApiKey:self.apiKey planId:planId];
+        _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.blinkUpController presentInterfaceAnimated:YES
+        [_blinkUpController presentInterfaceAnimated:YES
             resignActive: ^(BOOL willRespond, BOOL userDidCancel, NSError *error) {
                 [self blinkUpDidComplete:willRespond userDidCancel:userDidCancel error:error clearedCache:false];
 
                 // device poller is nil until this block completes, so set its timeout 0.5 seconds from now
                 // this is a HACK, need to solve before release
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    self.blinkUpController.devicePoller.pollTimeout = (self.timeoutMs / 1000.0);
+                    _blinkUpController.devicePoller.pollTimeout = (_timeoutMs / 1000.0);
                 });
             }
             devicePollingDidComplete: ^(BUDeviceInfo *deviceInfo, BOOL timedOut, NSError *error) {
@@ -227,7 +227,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     }
     else {
         // cache plan ID if it's not development ID (see electricimp.com/docs/manufacturing/planids/)
-        if (![deviceInfo.planId isEqual: self.developerPlanId]) {
+        if (![deviceInfo.planId isEqual: _developerPlanId]) {
             [[NSUserDefaults standardUserDefaults] setObject:deviceInfo.planId forKey:PLAN_ID_CACHE_KEY];
         }
         
@@ -243,13 +243,13 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * Returns true iff api key is 32 alphanumeric characters
  ********************************************************/
 - (BOOL) isApiKeyFormatValid {
-    if (self.apiKey == nil || self.apiKey.length != 32) {
+    if (_apiKey == nil || _apiKey.length != 32) {
         return NO;
     }
     
     // must be only alphanumeric characters
     NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
-    return [[self.apiKey stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
+    return [[_apiKey stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
 }
 
 /*********************************************************
@@ -259,7 +259,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 - (void) sendResultToCallback:(BlinkUpPluginResult *)pluginResult {
     CDVPluginResult *cordovaResult = [CDVPluginResult resultWithStatus:[pluginResult getCordovaStatus] messageAsString:[pluginResult getResultsAsJsonString]];
     [cordovaResult setKeepCallbackAsBool: [pluginResult getKeepCallback]];
-    [self.commandDelegate sendPluginResult:cordovaResult callbackId:self.callbackId];
+    [self.commandDelegate sendPluginResult:cordovaResult callbackId:_callbackId];
 }
 
 @end

@@ -40,15 +40,15 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
  * related properties as well
  ********************************************/
 - (void) setBlinkUpError:(NSError *)error {
-    self.state = Error;
-    self.errorType = BlinkUpSDKError;
-    self.errorCode = error.code;
-    self.errorMsg = error.localizedDescription;
+    _state = Error;
+    _errorType = BlinkUpSDKError;
+    _errorCode = error.code;
+    _errorMsg = error.localizedDescription;
 }
 - (void) setPluginError:(NSInteger)errorCode {
-    self.state = Error;
-    self.errorType = PluginError;
-    self.errorCode = errorCode;
+    _state = Error;
+    _errorType = PluginError;
+    _errorCode = errorCode;
 }
 
 /********************************************
@@ -56,13 +56,13 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
  * results back to Cordova
  ********************************************/
 - (CDVCommandStatus)getCordovaStatus {
-    if (self.state == Error) {
+    if (_state == Error) {
         return CDVCommandStatus_ERROR;
     }
     return CDVCommandStatus_OK;
 }
 - (BOOL) getKeepCallback {
-    return (self.state == Started);
+    return (_state == Started);
 }
 
 /********************************************
@@ -78,15 +78,15 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
     [resultsDict setObject:[self stateToJsonKey] forKey:STATE_KEY];
     
     // add error if necessary
-    if (self.state == Error) {
+    if (_state == Error) {
         [resultsDict setObject:[self generateErrorDict] forKey:ERROR_KEY];
     }
     
     // completed without error
     else {
-        [resultsDict setObject:[@(self.statusCode) stringValue] forKey:STATUS_CODE_KEY];
-        if (self.deviceInfo != nil) {
-            [resultsDict setObject:[self.deviceInfo toDictionary] forKey:DEVICE_INFO_KEY];
+        [resultsDict setObject:[@(_statusCode) stringValue] forKey:STATUS_CODE_KEY];
+        if (_deviceInfo != nil) {
+            [resultsDict setObject:[_deviceInfo toDictionary] forKey:DEVICE_INFO_KEY];
         }
     }
 
@@ -99,14 +99,14 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
 - (NSMutableDictionary *) generateErrorDict {
     NSMutableDictionary *errorDict = [[NSMutableDictionary alloc] init];
     
-    if (self.errorType == BlinkUpSDKError) {
+    if (_errorType == BlinkUpSDKError) {
         [errorDict setObject:@"blinkup" forKey:ERROR_TYPE_KEY];
-        [errorDict setObject:self.errorMsg forKey:ERROR_MSG_KEY];
+        [errorDict setObject:_errorMsg forKey:ERROR_MSG_KEY];
     }
     else {
         [errorDict setObject:@"plugin" forKey:ERROR_TYPE_KEY];
     }
-    [errorDict setObject:[@(self.errorCode) stringValue] forKey:ERROR_CODE_KEY];
+    [errorDict setObject:[@(_errorCode) stringValue] forKey:ERROR_CODE_KEY];
 
     return  errorDict;
 }
@@ -115,10 +115,10 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
  * returns JSON key corresponding to this.state
  *********************************************/
 - (NSString *) stateToJsonKey {
-    if (self.state == Started) {
+    if (_state == Started) {
         return @"started";
     }
-    else if (self.state == Completed) {
+    else if (_state == Completed) {
         return @"completed";
     }
     else {
