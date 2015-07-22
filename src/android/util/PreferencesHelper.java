@@ -1,4 +1,4 @@
-package com.macadamian.blinkup;
+package com.macadamian.blinkup.util;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -19,11 +19,11 @@ public class PreferencesHelper {
         editor.apply();
     }
 
-    static String getPlanIdKey(Activity activity) {
+    static public String getPlanIdKey(Activity activity) {
         return getStringPreference(activity, PLAN_ID_KEY, null);
     }
 
-    static void setPlanIdKey(Activity activity, String planIdKey) {
+    static public void setPlanIdKey(Activity activity, String planIdKey) {
         setStringPreference(activity, PLAN_ID_KEY, planIdKey);
     }
 }

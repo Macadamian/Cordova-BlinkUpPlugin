@@ -20,6 +20,8 @@ package com.macadamian.blinkup;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.macadamian.blinkup.util.DebugUtils;
+
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,10 +33,10 @@ public class BlinkUpPluginResult {
 
     // the JSON keys are from the Android BlinkUp SDK, documented at:
     // https://electricimp.com/docs/manufacturing/sdkdocs/android/callbacks/
-    private static final String IMPEE_ID = "impee_id";
-    static final String PLAN_ID = "plan_id";
-    private static final String AGENT_URL = "agent_url";
-    private static final String CLAIMED_AT = "claimed_at";
+    private static final String SDK_IMPEE_ID_KEY = "impee_id";
+    static final String SDK_PLAN_ID_KEY = "plan_id";
+    private static final String SDK_AGENT_URL_KEY = "agent_url";
+    private static final String SDK_CLAIMED_AT_KEY = "claimed_at";
 
     // possible states
     static final String STATE_STARTED = "started";
@@ -87,6 +89,9 @@ public class BlinkUpPluginResult {
      * Setters for our Results
      *************************************/
     public void setState(String state) {
+        DebugUtils.checkAssert(TextUtils.equals(state, STATE_COMPLETED)
+                || TextUtils.equals(state, STATE_ERROR)
+                || TextUtils.equals(state, STATE_STARTED));
         mState = state;
     }
     public void setStatusCode(int statusCode) {
@@ -105,10 +110,10 @@ public class BlinkUpPluginResult {
     }
     public void setDeviceInfoFromJson(JSONObject deviceInfo) {
         try {
-            mDeviceId = (deviceInfo.getString(IMPEE_ID) != null) ? deviceInfo.getString(IMPEE_ID).trim() : null;
-            mPlanId = deviceInfo.getString(PLAN_ID);
-            mAgentURL = deviceInfo.getString(AGENT_URL);
-            mVerificationDate = deviceInfo.getString(CLAIMED_AT).replace("Z", "+0:00"); // match date format to iOS
+            mDeviceId = (deviceInfo.getString(SDK_IMPEE_ID_KEY) != null) ? deviceInfo.getString(SDK_IMPEE_ID_KEY).trim() : null;
+            mPlanId = deviceInfo.getString(SDK_PLAN_ID_KEY);
+            mAgentURL = deviceInfo.getString(SDK_AGENT_URL_KEY);
+            mVerificationDate = deviceInfo.getString(SDK_CLAIMED_AT_KEY).replace("Z", "+0:00"); // match date format to iOS
             mHasDeviceInfo = true;
         } catch (JSONException e) {
             mState = STATE_ERROR;
@@ -118,12 +123,8 @@ public class BlinkUpPluginResult {
     }
 
     static void sendPluginErrorToCallback(int error) {
-        sendResultsToCallback(STATE_ERROR, error);
-    }
-
-    static void sendResultsToCallback(String state, int error) {
         BlinkUpPluginResult argErrorResult = new BlinkUpPluginResult();
-        argErrorResult.setState(state);
+        argErrorResult.setState(STATE_ERROR);
         argErrorResult.setPluginError(error);
         argErrorResult.sendResultsToCallback();
     }

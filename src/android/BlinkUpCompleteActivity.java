@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.electricimp.blinkup.BlinkupController;
+import com.macadamian.blinkup.util.PreferencesHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class BlinkUpCompleteActivity extends Activity {
 
                 // cache planID if not development ID (see electricimp.com/docs/manufacturing/planids/)
                 try {
-                    String planId = json.getString(BlinkUpPluginResult.PLAN_ID);
+                    String planId = json.getString(BlinkUpPluginResult.SDK_PLAN_ID_KEY);
                     if (!TextUtils.equals(planId, developerPlanId)) {
                         PreferencesHelper.setPlanIdKey(BlinkUpCompleteActivity.this, planId);
                     }
@@ -79,6 +80,7 @@ public class BlinkUpCompleteActivity extends Activity {
             // give error msg to Cordova
             //---------------------------------
             @Override public void onError(String errorMsg) {
+                // can't use "sendPluginErrorToCallback" since this is an SDK error
                 BlinkUpPluginResult errorResult = new BlinkUpPluginResult();
                 errorResult.setState(BlinkUpPluginResult.STATE_ERROR);
                 errorResult.setBlinkUpError(errorMsg);

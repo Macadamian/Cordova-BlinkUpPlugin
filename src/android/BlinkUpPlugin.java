@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.electricimp.blinkup.BlinkupController;
+import com.macadamian.blinkup.util.PreferencesHelper;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -41,8 +42,8 @@ public class BlinkUpPlugin extends CordovaPlugin {
     private static final String ABORT_BLINKUP = "abortBlinkUp";
     private static final String CLEAR_BLINKUP_DATA = "clearBlinkUpData";
 
-    private static CallbackContext mCallbackContext;
-    private static boolean mClearCache = false;
+    private static CallbackContext sCallbackContext;
+    private static boolean sClearCache = false;
 
     // only needed in this class
     private String mApiKey;
@@ -72,7 +73,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
      *********************************************************/
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
-        mCallbackContext = callbackContext;
+        sCallbackContext = callbackContext;
         final Activity activity = cordova.getActivity();
         final BlinkupController controller = BlinkupController.getInstance();
 
@@ -127,7 +128,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
     private boolean clearBlinkupData(final Activity activity, final BlinkupController controller) {
         PreferencesHelper.setPlanIdKey(activity, null);
-        mClearCache = true;
+        sClearCache = true;
         controller.intentClearComplete = new Intent(activity, ClearCompleteActivity.class);
 
         // default is to run on WebCore thread, clearing shows UI so needs UI thread
@@ -192,15 +193,15 @@ public class BlinkUpPlugin extends CordovaPlugin {
     }
 
     static boolean getClearCache() {
-        return mClearCache;
+        return sClearCache;
     }
 
     static void setClearCache(boolean val) {
-        mClearCache = val;
+        sClearCache = val;
     }
 
     static CallbackContext getCallbackContext() {
-        return mCallbackContext;
+        return sCallbackContext;
     }
 
 }
