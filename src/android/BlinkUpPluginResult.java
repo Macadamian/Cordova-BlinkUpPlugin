@@ -17,6 +17,7 @@
 
 package com.macadamian.blinkup;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.cordova.PluginResult;
@@ -28,26 +29,21 @@ import org.json.JSONObject;
 public class BlinkUpPluginResult {
     private static final String TAG = "BlinkUpPluginResult";
 
-    // possible states
-    public enum BlinkUpPluginState {
-        Started("started"),
-        Completed("completed"),
-        Error("error");
+    // the JSON keys are from the Android BlinkUp SDK, documented at:
+    // https://electricimp.com/docs/manufacturing/sdkdocs/android/callbacks/
+    private static final String IMPEE_ID = "impee_id";
+    static final String PLAN_ID = "plan_id";
+    private static final String AGENT_URL = "agent_url";
+    private static final String CLAIMED_AT = "claimed_at";
 
-        private final String state;
-        BlinkUpPluginState(String state) { this.state = state; }
-        public String getKey() { return this.state; }
-    }
+    // possible states
+    static final String STATE_STARTED = "started";
+    static final String STATE_COMPLETED = "completed";
+    static final String STATE_ERROR = "error";
 
     // possible error types
-    private enum BlinkUpErrorType {
-        BlinkUpSDKError("blinkup"),
-        PluginError("plugin");
-
-        private final String type;
-        BlinkUpErrorType(String type) { this.type = type; }
-        public String getType() { return this.type; }
-    }
+    private static final String ERROR_TYPE_BLINK_UP_SDK_ERROR = "blinkup";
+    private static final String ERROR_TYPE_PLUGIN_ERROR = "plugin";
 
     //=====================================
     // JSON keys for results
@@ -75,52 +71,61 @@ public class BlinkUpPluginResult {
     //====================================
     // BlinkUp Results
     //====================================
-    private BlinkUpPluginState state;
-    private int statusCode;
-    private BlinkUpErrorType errorType;
-    private int errorCode;
-    private String errorMsg;
+    private String mState;
+    private int mStatusCode;
+    private String mErrorType;
+    private int mErrorCode;
+    private String mErrorMsg;
 
-    private String deviceId;
-    private String planId;
-    private String agentURL;
-    private String verificationDate;
-    private boolean hasDeviceInfo = false;
+    private String mDeviceId;
+    private String mPlanId;
+    private String mAgentURL;
+    private String mVerificationDate;
+    private boolean mHasDeviceInfo = false;
 
     /*************************************
      * Setters for our Results
      *************************************/
-    public void setState(BlinkUpPluginState state) {
-        this.state = state;
+    public void setState(String state) {
+        mState = state;
     }
     public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
+        mStatusCode = statusCode;
     }
     public void setPluginError(int errorCode) {
-        this.state = BlinkUpPluginState.Error;
-        this.errorType = BlinkUpErrorType.PluginError;
-        this.errorCode = errorCode;
+        mState = STATE_ERROR;
+        mErrorType = ERROR_TYPE_PLUGIN_ERROR;
+        mErrorCode = errorCode;
     }
     public void setBlinkUpError(String errorMsg) {
-        this.state = BlinkUpPluginState.Error;
-        this.errorType = BlinkUpErrorType.BlinkUpSDKError;
-        this.errorCode = 1; // set generic error code
-        this.errorMsg = errorMsg;
+        mState = STATE_ERROR;
+        mErrorType = ERROR_TYPE_BLINK_UP_SDK_ERROR;
+        mErrorCode = 1; // set generic error code
+        mErrorMsg = errorMsg;
     }
-    public void setDeviceInfoAsJson(JSONObject deviceInfo) {
+    public void setDeviceInfoFromJson(JSONObject deviceInfo) {
         try {
-            // the JSON keys are from the Android BlinkUp SDK, documented at:
-            // https://electricimp.com/docs/manufacturing/sdkdocs/android/callbacks/
-            this.deviceId = (deviceInfo.getString("impee_id") != null) ? deviceInfo.getString("impee_id").trim() : null;
-            this.planId = deviceInfo.getString("plan_id");
-            this.agentURL = deviceInfo.getString("agent_url");
-            this.verificationDate = deviceInfo.getString("claimed_at").replace("Z", "+0:00"); // match date format to iOS
-            this.hasDeviceInfo = true;
+            mDeviceId = (deviceInfo.getString(IMPEE_ID) != null) ? deviceInfo.getString(IMPEE_ID).trim() : null;
+            mPlanId = deviceInfo.getString(PLAN_ID);
+            mAgentURL = deviceInfo.getString(AGENT_URL);
+            mVerificationDate = deviceInfo.getString(CLAIMED_AT).replace("Z", "+0:00"); // match date format to iOS
+            mHasDeviceInfo = true;
         } catch (JSONException e) {
-            this.state = BlinkUpPluginState.Error;
-            setPluginError(BlinkUpPlugin.ErrorCodes.JSON_ERROR.getCode());
+            mState = STATE_ERROR;
+            setPluginError(BlinkUpPlugin.ERROR_JSON_ERROR);
             sendResultsToCallback();
         }
+    }
+
+    static void sendPluginErrorToCallback(int error) {
+        sendResultsToCallback(STATE_ERROR, error);
+    }
+
+    static void sendResultsToCallback(String state, int error) {
+        BlinkUpPluginResult argErrorResult = new BlinkUpPluginResult();
+        argErrorResult.setState(state);
+        argErrorResult.setPluginError(error);
+        argErrorResult.sendResultsToCallback();
     }
 
     /*************************************
@@ -132,7 +137,7 @@ public class BlinkUpPluginResult {
 
         // set result status
         PluginResult.Status cordovaResultStatus;
-        if (this.state == BlinkUpPluginState.Error) {
+        if (TextUtils.equals(mState, STATE_ERROR)) {
             cordovaResultStatus = PluginResult.Status.ERROR;
         }
         else {
@@ -140,14 +145,14 @@ public class BlinkUpPluginResult {
         }
 
         try {
-            resultJSON.put(ResultKeys.STATE.getKey(), this.state.getKey());
+            resultJSON.put(ResultKeys.STATE.getKey(), mState);
 
-            if (this.state == BlinkUpPluginState.Error) {
+            if (TextUtils.equals(mState, STATE_ERROR)) {
                 resultJSON.put(ResultKeys.ERROR.getKey(), generateErrorJson());
             }
             else {
-                resultJSON.put(ResultKeys.STATUS_CODE.getKey(), ("" + statusCode));
-                if (this.hasDeviceInfo) {
+                resultJSON.put(ResultKeys.STATUS_CODE.getKey(), ("" + mStatusCode));
+                if (mHasDeviceInfo) {
                     resultJSON.put(ResultKeys.DEVICE_INFO.getKey(), generateDeviceInfoJson());
                 }
             }
@@ -158,7 +163,7 @@ public class BlinkUpPluginResult {
 
         PluginResult pluginResult = new PluginResult(cordovaResultStatus, resultJSON.toString());
         pluginResult.setKeepCallback(true); // uses same BlinkUpPlugin object across calls, so need to keep callback
-        BlinkUpPlugin.callbackContext.sendPluginResult(pluginResult);
+        BlinkUpPlugin.getCallbackContext().sendPluginResult(pluginResult);
     }
 
     /*************************************
@@ -168,15 +173,15 @@ public class BlinkUpPluginResult {
         JSONObject errorJson = new JSONObject();
 
         try {
-            errorJson.put(ResultKeys.ERROR_TYPE.getKey(), this.errorType.getType());
-            errorJson.put(ResultKeys.ERROR_CODE.getKey(), ("" + this.errorCode));
+            errorJson.put(ResultKeys.ERROR_TYPE.getKey(), mErrorType);
+            errorJson.put(ResultKeys.ERROR_CODE.getKey(), "" + mErrorCode);
 
-            if (this.errorType == BlinkUpErrorType.BlinkUpSDKError) {
-                errorJson.put(ResultKeys.ERROR_MSG.getKey(), this.errorMsg);
+            if (TextUtils.equals(mErrorType, ERROR_TYPE_BLINK_UP_SDK_ERROR)) {
+                errorJson.put(ResultKeys.ERROR_MSG.getKey(), mErrorMsg);
             }
         } catch (JSONException e) {
-            this.state = BlinkUpPluginState.Error;
-            setPluginError(BlinkUpPlugin.ErrorCodes.JSON_ERROR.getCode());
+            mState = STATE_ERROR;
+            setPluginError(BlinkUpPlugin.ERROR_JSON_ERROR);
             sendResultsToCallback();
         }
 
@@ -190,13 +195,13 @@ public class BlinkUpPluginResult {
         JSONObject deviceInfoJson = new JSONObject();
 
         try {
-            deviceInfoJson.put(ResultKeys.DEVICE_ID.getKey(), this.deviceId);
-            deviceInfoJson.put(ResultKeys.PLAN_ID.getKey(), this.planId);
-            deviceInfoJson.put(ResultKeys.AGENT_URL.getKey(), this.agentURL);
-            deviceInfoJson.put(ResultKeys.VERIFICATION_DATE.getKey(), this.verificationDate);
+            deviceInfoJson.put(ResultKeys.DEVICE_ID.getKey(), mDeviceId);
+            deviceInfoJson.put(ResultKeys.PLAN_ID.getKey(), mPlanId);
+            deviceInfoJson.put(ResultKeys.AGENT_URL.getKey(), mAgentURL);
+            deviceInfoJson.put(ResultKeys.VERIFICATION_DATE.getKey(), mVerificationDate);
         } catch (JSONException e) {
-            this.state = BlinkUpPluginState.Error;
-            setPluginError(BlinkUpPlugin.ErrorCodes.JSON_ERROR.getCode());
+            mState = STATE_ERROR;
+            setPluginError(BlinkUpPlugin.ERROR_JSON_ERROR);
             sendResultsToCallback();
         }
 
