@@ -89,6 +89,8 @@
         <source-file src="src/android/BlinkUpPluginResult.java" target-dir="src/com/macadamian/blinkup" />
         <source-file src="src/android/BlinkUpCompleteActivity.java" target-dir="src/com/macadamian/blinkup" />
         <source-file src="src/android/ClearCompleteActivity.java" target-dir="src/com/macadamian/blinkup" />
+        <source-file src="src/android/Extras.java" target-dir="src/com/macadamian/blinkup/" />
+        <source-file src="src/android/PreferencesHelper.java" target-dir="src/com/macadamian/blinkup/" />
     </platform>
 
     <!--========== iOS ==========-->
