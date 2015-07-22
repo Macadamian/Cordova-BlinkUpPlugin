@@ -72,10 +72,7 @@ public class BlinkUpCompleteActivity extends Activity {
                         editor.apply();
                     }
                 } catch (JSONException e) {
-                    BlinkUpPluginResult jsonErrorResult = new BlinkUpPluginResult();
-                    jsonErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                    jsonErrorResult.setPluginError(BlinkUpPlugin.ErrorCodes.JSON_ERROR.getCode());
-                    jsonErrorResult.sendResultsToCallback();
+                    BlinkUpPlugin.sendPluginErrorToCallback(BlinkUpPlugin.ErrorCodes.JSON_ERROR);
                 }
             }
 
@@ -83,20 +80,18 @@ public class BlinkUpCompleteActivity extends Activity {
             // give error msg to Cordova
             //---------------------------------
             @Override public void onError(String errorMsg) {
-                BlinkUpPluginResult errorResult = new BlinkUpPluginResult();
-                errorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                errorResult.setBlinkUpError(errorMsg);
-                errorResult.sendResultsToCallback();
+                // can't use "sendPluginErrorToCallback" since this is an SDK error
+                BlinkUpPluginResult sdkErrorResult = new BlinkUpPluginResult();
+                sdkErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
+                sdkErrorResult.setBlinkUpError(errorMsg);
+                sdkErrorResult.sendResultsToCallback();
             }
 
             //---------------------------------
             // give timeout message to Cordova
             //---------------------------------
             @Override public void onTimeout() {
-                BlinkUpPluginResult timeoutResult = new BlinkUpPluginResult();
-                timeoutResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                timeoutResult.setPluginError(BlinkUpPlugin.ErrorCodes.PROCESS_TIMED_OUT.getCode());
-                timeoutResult.sendResultsToCallback();
+                BlinkUpPlugin.sendPluginErrorToCallback(BlinkUpPlugin.ErrorCodes.PROCESS_TIMED_OUT);
             }
         };
 

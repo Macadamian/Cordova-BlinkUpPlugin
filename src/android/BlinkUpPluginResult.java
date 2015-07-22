@@ -109,6 +109,8 @@ public class BlinkUpPluginResult {
     }
     public void setDeviceInfoAsJson(JSONObject deviceInfo) {
         try {
+            // the JSON keys are from the Android BlinkUp SDK, documented at:
+            // https://electricimp.com/docs/manufacturing/sdkdocs/android/callbacks/
             this.deviceId = (deviceInfo.getString("impee_id") != null) ? deviceInfo.getString("impee_id").trim() : null;
             this.planId = deviceInfo.getString("plan_id");
             this.agentURL = deviceInfo.getString("agent_url");
@@ -144,7 +146,7 @@ public class BlinkUpPluginResult {
                 resultJSON.put(ResultKeys.ERROR.getKey(), generateErrorJson());
             }
             else {
-                resultJSON.put(ResultKeys.STATUS_CODE.getKey(), String.valueOf(statusCode));
+                resultJSON.put(ResultKeys.STATUS_CODE.getKey(), ("" + statusCode));
                 if (this.hasDeviceInfo) {
                     resultJSON.put(ResultKeys.DEVICE_INFO.getKey(), generateDeviceInfoJson());
                 }
@@ -167,7 +169,7 @@ public class BlinkUpPluginResult {
 
         try {
             errorJson.put(ResultKeys.ERROR_TYPE.getKey(), this.errorType.getType());
-            errorJson.put(ResultKeys.ERROR_CODE.getKey(), String.valueOf(this.errorCode));
+            errorJson.put(ResultKeys.ERROR_CODE.getKey(), ("" + this.errorCode));
 
             if (this.errorType == BlinkUpErrorType.BlinkUpSDKError) {
                 errorJson.put(ResultKeys.ERROR_MSG.getKey(), this.errorMsg);

@@ -74,11 +74,11 @@ public class BlinkUpPlugin extends CordovaPlugin {
         public int getCode() { return code; }
     }
 
-    // argument indexes from Cordova javascript
-    private static final int BlinkUpArgumentApiKey = 0;
-    private static final int BlinkUpArgumentDeveloperPlanId = 1;
-    private static final int BlinkUpArgumentTimeOut = 2;
-    private static final int BlinkUpArgumentGeneratePlanId = 3;
+    // argument indexes from BlinkUp.js, the plugin's JS interface to Cordova
+    private static final int BLINKUP_ARG_API_KEY = 0;
+    private static final int BLINKUP_ARG_DEVELOPER_PLAN_ID = 1;
+    private static final int BLINKUP_ARG_TIMEOUT_MS = 2;
+    private static final int BLINKUP_ARG_GENERATE_PLAN_ID = 3;
 
     /**********************************************************
      * method called by Cordova javascript
@@ -96,24 +96,18 @@ public class BlinkUpPlugin extends CordovaPlugin {
         // starting blinkup
         if (action.equalsIgnoreCase("invokeBlinkUp")) {
             try {
-                apiKey = data.getString(BlinkUpArgumentApiKey);
-                developerPlanId = data.getString(BlinkUpArgumentDeveloperPlanId);
-                timeoutMs = data.getInt(BlinkUpArgumentTimeOut);
-                generatePlanId = data.getBoolean(BlinkUpArgumentGeneratePlanId);
+                apiKey = data.getString(BLINKUP_ARG_API_KEY);
+                developerPlanId = data.getString(BLINKUP_ARG_DEVELOPER_PLAN_ID);
+                timeoutMs = data.getInt(BLINKUP_ARG_TIMEOUT_MS);
+                generatePlanId = data.getBoolean(BLINKUP_ARG_GENERATE_PLAN_ID);
             } catch (JSONException exc) {
-                BlinkUpPluginResult argErrorResult = new BlinkUpPluginResult();
-                argErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                argErrorResult.setPluginError(ErrorCodes.INVALID_ARGUMENTS.getCode());
-                argErrorResult.sendResultsToCallback();
+                sendPluginErrorToCallback(ErrorCodes.INVALID_ARGUMENTS);
                 return false;
             }
 
             // if api key not valid, send error message and quit
             if (!apiKeyFormatValid()) {
-                BlinkUpPluginResult pluginResult = new BlinkUpPluginResult();
-                pluginResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                pluginResult.setPluginError(ErrorCodes.INVALID_API_KEY.getCode());
-                pluginResult.sendResultsToCallback();
+                sendPluginErrorToCallback(ErrorCodes.INVALID_API_KEY);
                 return false;
             }
 
@@ -129,11 +123,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
         // abort blinkup
         else if (action.equalsIgnoreCase("abortBlinkUp")) {
             BlinkupController.getInstance().cancelTokenStatusPolling();
-
-            BlinkUpPluginResult pluginResult = new BlinkUpPluginResult();
-            pluginResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-            pluginResult.setPluginError(ErrorCodes.CANCELLED_BY_USER.getCode());
-            pluginResult.sendResultsToCallback();
+            sendPluginErrorToCallback(ErrorCodes.CANCELLED_BY_USER);
         }
 
         // clears wifi and removes cached planId
@@ -177,10 +167,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
         BlinkupController.ServerErrorHandler serverErrorHandler= new BlinkupController.ServerErrorHandler() {
             @Override
             public void onError(String s) {
-                BlinkUpPluginResult serverErrorResult = new BlinkUpPluginResult();
-                serverErrorResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
-                serverErrorResult.setStatusCode(ErrorCodes.VERIFY_API_KEY_FAIL.getCode());
-                serverErrorResult.sendResultsToCallback();
+                sendPluginErrorToCallback(ErrorCodes.VERIFY_API_KEY_FAIL);
             }
         };
 
@@ -210,5 +197,16 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
         String isAlphaNumericPattern = "^[a-zA-Z0-9]*$";
         return apiKey.matches(isAlphaNumericPattern);
+    }
+
+    /**********************************************************
+     * Creates appropriate BlinkUpPluginResult and sends it
+     * to the JS callback
+     *********************************************************/
+    public static void sendPluginErrorToCallback(ErrorCodes errorCode) {
+        BlinkUpPluginResult pluginResult = new BlinkUpPluginResult();
+        pluginResult.setState(BlinkUpPluginResult.BlinkUpPluginState.Error);
+        pluginResult.setPluginError(errorCode.getCode());
+        pluginResult.sendResultsToCallback();
     }
 }
