@@ -19,11 +19,11 @@ public class PreferencesHelper {
         editor.apply();
     }
 
-    static public String getPlanIdKey(Activity activity) {
+    static public String getPlanId(Activity activity) {
         return getStringPreference(activity, PLAN_ID_KEY, null);
     }
 
-    static public void setPlanIdKey(Activity activity, String planIdKey) {
+    static public void setPlanId(Activity activity, String planIdKey) {
         setStringPreference(activity, PLAN_ID_KEY, planIdKey);
     }
 }

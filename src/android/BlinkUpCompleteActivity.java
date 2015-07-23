@@ -69,7 +69,7 @@ public class BlinkUpCompleteActivity extends Activity {
                 try {
                     String planId = json.getString(BlinkUpPluginResult.SDK_PLAN_ID_KEY);
                     if (!TextUtils.equals(planId, developerPlanId)) {
-                        PreferencesHelper.setPlanIdKey(BlinkUpCompleteActivity.this, planId);
+                        PreferencesHelper.setPlanId(BlinkUpCompleteActivity.this, planId);
                     }
                 } catch (JSONException e) {
                     BlinkUpPluginResult.sendPluginErrorToCallback(BlinkUpPlugin.ERROR_JSON_ERROR);

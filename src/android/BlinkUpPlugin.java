@@ -127,7 +127,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     }
 
     private boolean clearBlinkupData(final Activity activity, final BlinkupController controller) {
-        PreferencesHelper.setPlanIdKey(activity, null);
+        PreferencesHelper.setPlanId(activity, null);
         sClearCache = true;
         controller.intentClearComplete = new Intent(activity, ClearCompleteActivity.class);
 
@@ -171,7 +171,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
             if (org.apache.cordova.BuildConfig.DEBUG && !TextUtils.isEmpty(mDeveloperPlanId)) {
                 controller.setPlanID(mDeveloperPlanId);
             } else {
-                String planId = PreferencesHelper.getPlanIdKey(activity);
+                String planId = PreferencesHelper.getPlanId(activity);
                 controller.setPlanID(planId);
             }
         }
