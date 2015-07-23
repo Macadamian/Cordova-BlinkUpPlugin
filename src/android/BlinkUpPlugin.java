@@ -166,14 +166,14 @@ public class BlinkUpPlugin extends CordovaPlugin {
         };
 
         // load cached planId if available. Otherwise, SDK generates new one automatically
-        if (!mGeneratePlanId) {
-            String planId = PreferencesHelper.getPlanIdKey(activity);
-            controller.setPlanID(planId);
-        }
-
         // see electricimp.com/docs/manufacturing/planids/ for info about planIDs
-        if (org.apache.cordova.BuildConfig.DEBUG && !mGeneratePlanId) {
-            controller.setPlanID(mDeveloperPlanId);
+        if (!mGeneratePlanId) {
+            if (org.apache.cordova.BuildConfig.DEBUG && !TextUtils.isEmpty(mDeveloperPlanId)) {
+                controller.setPlanID(mDeveloperPlanId);
+            } else {
+                String planId = PreferencesHelper.getPlanIdKey(activity);
+                controller.setPlanID(planId);
+            }
         }
 
         controller.acquireSetupToken(activity, mApiKey, tokenAcquireCallback);
