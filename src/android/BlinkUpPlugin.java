@@ -58,7 +58,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     static final int ERROR_INVALID_ARGUMENTS = 100;
     static final int ERROR_PROCESS_TIMED_OUT = 101;
     static final int ERROR_CANCELLED_BY_USER = 102;
-    static final int ERROR_INVALID_API_KEY = 300;
+    static final int ERROR_INVALID_API_KEY = 103;
     static final int ERROR_VERIFY_API_KEY_FAIL = 301; // android only
     static final int ERROR_JSON_ERROR = 302;          // android only
 
