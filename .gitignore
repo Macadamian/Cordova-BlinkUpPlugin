@@ -1,2 +1,3 @@
-.DS_Store
 .idea
+**/.DS_Store
+/tests/ios/node_modules
