@@ -20,12 +20,12 @@
 module.exports = {
     //apiKey: string, developerPlanId: string, timeoutMs: int, generateNewPlanId: bool 
     invokeBlinkUp: function (apiKey, developerPlanId, timeoutMs, generateNewPlanId, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "invokeBlinkUp", [apiKey, developerPlanId, timeoutMs, generateNewPlanId]);
+        cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "invokeBlinkUp", [apiKey, developerPlanId, timeoutMs, generateNewPlanId]);
     },
     abortBlinkUp: function (successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "abortBlinkUp", []);
+        cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "abortBlinkUp", []);
     },
     clearBlinkUpData: function (successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "BlinkUpPlugin", "clearBlinkUpData", []);
+        cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "clearBlinkUpData", []);
     }
 };

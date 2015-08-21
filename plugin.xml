@@ -20,7 +20,7 @@
         id="com.macadamian.blinkup"
         version="0.5">
     
-    <name>BlinkUpPlugin</name>
+    <name>cordova-blinkup-plugin</name>
     <description>
         This plugin allows you to integrate the native BlinkUp process for setting up an Electric Imp device directly into your Cordova / PhoneGap project.
         
@@ -63,7 +63,7 @@
     <!--========== Android ==========-->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="BlinkUpPlugin">
+            <feature name="cordova-blinkup-plugin">
                 <param name="android-package" value="com.macadamian.blinkup.BlinkUpPlugin" />
             </feature>
         </config-file>
@@ -97,7 +97,7 @@
     <!--========== iOS ==========-->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="BlinkUpPlugin">
+            <feature name="cordova-blinkup-plugin">
                 <param name="ios-package" value="BlinkUpPlugin" />
             </feature>
             <preference name="DisallowOverscroll" value="true" />
