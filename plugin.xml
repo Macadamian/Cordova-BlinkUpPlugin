@@ -18,7 +18,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
         id="com.macadamian.blinkup"
-        version="0.5">
+        version="0.5.1">
     
     <name>cordova-blinkup-plugin</name>
     <description>
