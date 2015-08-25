@@ -3,6 +3,8 @@ Introduction
 
 This Cordova / Phonegap plugin allows you to easily integrate the native BlinkUp process to connect an Electric Imp device to the internet in your app. Note that because the BlinkUp SDK is private, you will need to add it to your project after installing the plugin. If you do not have access to the BlinkUp SDK, you may contact Electric Imp at sales@electricimp.com.
 
+Integrate your application with this plugin directly from the command line using `cordova plugin add cordova-blinkup-plugin`.
+
 A sample Cordova app that demonstrates how to integrate the plugin can be found at https://github.com/Macadamian/Cordova-BlinkUpSample.
 
 ## Table of Contents
