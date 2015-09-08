@@ -63,9 +63,9 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         if ([self sendErrorToCallbackIfArgumentsInvalid]) {
             return;
         }
-        
+
         NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)_timeoutMs);
-        
+
         [self navigateToBlinkUpView];
     }];
 }
@@ -80,12 +80,11 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 
     [self.commandDelegate runInBackground:^{
         [_blinkUpController.devicePoller stopPolling];
-        _blinkUpController = nil;
 
         BlinkUpPluginResult *abortResult = [[BlinkUpPluginResult alloc] init];
         abortResult.state = Error;
         [abortResult setPluginError:CANCELLED_BY_USER];
-        
+
         [self sendResultToCallback:abortResult];
     }];
 }
@@ -104,11 +103,18 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 
         // create a controller to clear network info
         BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
-        BUFlashController *flashController = [[BUFlashController alloc] init];
+
+        // create a controller to clear network info
+        BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
+        if(_flashController == nil) {
+            _flashController = [[BUFlashController alloc] init];
+        } else if(_blinkUpController != nil) {
+            _flashController = _blinkUpController.flashController;
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             // present the clear device flashing screen
-            [flashController presentFlashWithNetworkConfig:clearConfig configId:nil animated:YES resignActive:
+            [_flashController presentFlashWithNetworkConfig:clearConfig configId:nil animated:YES resignActive:
              ^(BOOL willRespond, BUDevicePoller *devicePoller, NSError *error) {
                  [self blinkUpDidComplete:false userDidCancel:false error:nil clearedCache:true];
              }];
@@ -122,10 +128,10 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * if you wish to use a custom UI (refer to API docs)
  ********************************************************/
 - (void) navigateToBlinkUpView {
-    
+
     // load cached planID (if not cached yet, BlinkUp automatically generates a new one)
     NSString *planId = [[NSUserDefaults standardUserDefaults] objectForKey:PLAN_ID_CACHE_KEY];
-    
+
     // If generateNewPlanId is false and a planId is passed from the JS, this will overwrite
     // the planId from the cache with the one passed from JS. This will only occur during debug builds.
     //
@@ -137,12 +143,14 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     #ifdef DEBUG
         planId = ([_developerPlanId length] > 0) ? _developerPlanId : nil;
     #endif
-    
-    if (_generatePlanId || planId == nil) {
-        _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey];
-    }
-    else {
-        _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
+
+    if (_blinkUpController == nil) {
+        if (_generatePlanId || planId == nil) {
+            _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey];
+        }
+        else {
+            _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
+        }
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -197,7 +205,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
             pluginResult.statusCode = CLEAR_WIFI_COMPLETE;
         }
     }
-    
+
     [self sendResultToCallback:pluginResult];
 }
 
@@ -227,7 +235,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         if (![deviceInfo.planId isEqual: _developerPlanId]) {
             [[NSUserDefaults standardUserDefaults] setObject:deviceInfo.planId forKey:PLAN_ID_CACHE_KEY];
         }
-        
+
         pluginResult.state = Completed;
         pluginResult.statusCode = DEVICE_CONNECTED;
         pluginResult.deviceInfo = deviceInfo;
@@ -235,27 +243,27 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 
     [self sendResultToCallback:pluginResult];
 }
-                   
+
 /*********************************************************
  * Sends error to callback if arguments don't have correct
  * type, or if apiKey is invalid format.
  * @return YES if error was sent, NO otherwise
  ********************************************************/
 - (BOOL) sendErrorToCallbackIfArgumentsInvalid {
-    
+
     BOOL invalidArguments = (self.timeoutMs == 0);
     BOOL invalidApiKey = ![BlinkUpPlugin isApiKeyFormatValid:self.apiKey];
-    
+
     // send error to callback
     if (invalidArguments || invalidApiKey) {
         BlinkUpPluginResult *pluginResult = [[BlinkUpPluginResult alloc] init];
         pluginResult.state = Error;
-        
+
         [pluginResult setPluginError:(invalidApiKey ? INVALID_API_KEY : INVALID_ARGUMENTS)];
-        
+
         [self sendResultToCallback:pluginResult];
     }
-    
+
     return (invalidArguments || invalidApiKey);
 }
 
@@ -276,7 +284,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
     if (apiKey == nil || apiKey.length != 32) {
         return NO;
     }
-    
+
     // must be only alphanumeric characters
     NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
     return ([[apiKey stringByTrimmingCharactersInSet:alphaSet] length] == 0);

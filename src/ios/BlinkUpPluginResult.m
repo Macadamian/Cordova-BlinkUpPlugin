@@ -76,12 +76,12 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
 
     // set our state (never null)
     [resultsDict setObject:[self stateToJsonKey] forKey:STATE_KEY];
-    
+
     // add error if necessary
     if (_state == Error) {
         [resultsDict setObject:[self generateErrorDict] forKey:ERROR_KEY];
     }
-    
+
     // completed without error
     else {
         [resultsDict setObject:[@(_statusCode) stringValue] forKey:STATUS_CODE_KEY];
@@ -98,7 +98,7 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
  ********************************************/
 - (NSMutableDictionary *) generateErrorDict {
     NSMutableDictionary *errorDict = [[NSMutableDictionary alloc] init];
-    
+
     if (_errorType == BlinkUpSDKError) {
         [errorDict setObject:@"blinkup" forKey:ERROR_TYPE_KEY];
         [errorDict setObject:_errorMsg forKey:ERROR_MSG_KEY];
@@ -130,10 +130,10 @@ NSString * const DEVICE_INFO_KEY = @"deviceInfo";
  * Helper: takes dict and returns JSON string
  ********************************************/
 - (NSString *) toJsonString:(NSMutableDictionary *)resultsDict {
-    
+
     NSError *jsonError;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:resultsDict options:NSJSONWritingPrettyPrinted error:&jsonError];
-    
+
     if (jsonError != nil) {
         NSLog(@"Error converting to JSON. %@", jsonError.localizedDescription);
         return @"";
