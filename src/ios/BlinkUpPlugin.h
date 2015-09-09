@@ -18,6 +18,7 @@
 #import <Cordova/CDV.h>
 
 @class BUBasicController;
+@class BUFlashController;
 
 @interface BlinkUpPlugin : CDVPlugin
 
@@ -30,10 +31,11 @@
 - (void)clearBlinkUpData:(CDVInvokedUrlCommand *)command;
 
 // instance variables
-@property BUBasicController *blinkUpController;
-@property NSString *apiKey;
-@property NSString *callbackId;
-@property NSString *developerPlanId;
+@property (strong) BUBasicController *blinkUpController;
+@property (strong) BUFlashController *flashController;
+@property (strong) NSString *apiKey;
+@property (strong) NSString *callbackId;
+@property (strong) NSString *developerPlanId;
 @property NSInteger timeoutMs;
 @property BOOL generatePlanId;
 
