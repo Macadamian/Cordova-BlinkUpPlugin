@@ -104,8 +104,6 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
         // create a controller to clear network info
         BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
 
-        // create a controller to clear network info
-        BUNetworkConfig *clearConfig = [BUNetworkConfig clearNetworkConfig];
         if(_flashController == nil) {
             _flashController = [[BUFlashController alloc] init];
         } else if(_blinkUpController != nil) {
