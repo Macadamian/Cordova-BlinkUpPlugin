@@ -73,14 +73,14 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <activity android:name="com.macadamian.blinkup.ClearCompleteActivity" />
-            <activity android:name="com.macadamian.blinkup.BlinkUpCompleteActivity" />
-            <activity android:name="com.electricimp.blinkup.WifiSelectActivity" android:label="BlinkUp" />
-            <activity android:name="com.electricimp.blinkup.BlinkupGLActivity" android:label="BlinkUp" />
-            <activity android:name="com.electricimp.blinkup.WifiActivity" android:label="BlinkUp" />
-            <activity android:name="com.electricimp.blinkup.WPSActivity" android:label="BlinkUp" />
-            <activity android:name="com.electricimp.blinkup.ClearWifiActivity" android:label="BlinkUp" />
-            <activity android:name="com.electricimp.blinkup.InterstitialActivity" android:label="BlinkUp" />
+            <activity android:name="com.macadamian.blinkup.ClearCompleteActivity" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.macadamian.blinkup.BlinkUpCompleteActivity" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.WifiSelectActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.BlinkupGLActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.WifiActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.WPSActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.ClearWifiActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
+            <activity android:name="com.electricimp.blinkup.InterstitialActivity" android:label="BlinkUp" android:configChanges="orientation" android:screenOrientation="portrait" />
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
