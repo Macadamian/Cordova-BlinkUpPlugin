@@ -23,6 +23,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.electricimp.blinkup.BlinkupController;
+import com.electricimp.blinkup.TokenStatusCallback;
+import com.electricimp.blinkup.TokenAcquireCallback;
+import com.electricimp.blinkup.ServerErrorHandler;
 import com.macadamian.blinkup.util.PreferencesHelper;
 
 import org.apache.cordova.CallbackContext;
@@ -147,7 +150,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     private void presentBlinkUp(Activity activity, BlinkupController controller) {
 
         // show toast if can't acquire token
-        final BlinkupController.TokenAcquireCallback tokenAcquireCallback = new BlinkupController.TokenAcquireCallback() {
+        final TokenAcquireCallback tokenAcquireCallback = new TokenAcquireCallback() {
             @Override
             public void onSuccess(String planId, String id) { }
 
@@ -158,7 +161,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
         };
 
         // send back error if connectivity issue
-        BlinkupController.ServerErrorHandler serverErrorHandler= new BlinkupController.ServerErrorHandler() {
+        ServerErrorHandler serverErrorHandler= new ServerErrorHandler() {
             @Override
             public void onError(String s) {
                 BlinkUpPluginResult.sendPluginErrorToCallback(ERROR_VERIFY_API_KEY_FAIL);

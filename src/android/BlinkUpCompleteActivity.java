@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.electricimp.blinkup.BlinkupController;
+import com.electricimp.blinkup.TokenStatusCallback;
 import com.macadamian.blinkup.util.PreferencesHelper;
 
 import org.json.JSONException;
@@ -53,7 +54,7 @@ public class BlinkUpCompleteActivity extends Activity {
     }
 
     private void getDeviceInfo(final String developerPlanId, int timeoutMs) {
-        final BlinkupController.TokenStatusCallback tokenStatusCallback= new BlinkupController.TokenStatusCallback() {
+        final TokenStatusCallback tokenStatusCallback= new TokenStatusCallback() {
 
             //---------------------------------
             // give connection info to Cordova
