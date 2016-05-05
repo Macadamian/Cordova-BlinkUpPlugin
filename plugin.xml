@@ -64,9 +64,11 @@
     <platform name="android">
         <!-- Application specific permission injections -->
         <hook type="after_platform_add" src="scripts/android/manifest_permission_inject.js" />
+        <hook type="after_plugin_add" src="scripts/android/manifest_permission_inject.js" />
         
         <!-- Injections for blinkup -->
         <hook type="after_platform_add" src="scripts/android/blinkup/main_activity_inject.js" />
+        <hook type="after_plugin_add" src="scripts/android/blinkup/main_activity_inject.js" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="cordova-blinkup-plugin">
