@@ -41,6 +41,7 @@ import org.json.JSONException;
 public class BlinkUpPlugin extends CordovaPlugin {
     private static final String TAG = "BlinkUpPlugin";
 
+    private static final String START_BLINKUP = "startBlinkUp";
     private static final String INVOKE_BLINKUP = "invokeBlinkUp";
     private static final String ABORT_BLINKUP = "abortBlinkUp";
     private static final String CLEAR_BLINKUP_DATA = "clearBlinkUpData";
@@ -51,6 +52,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
     // only needed in this class
     private String mApiKey;
     private Boolean mGeneratePlanId = false;
+    private Boolean mIsInDevelopment = false;
     private String mDeveloperPlanId;
 
     static final int STATUS_DEVICE_CONNECTED = 0;
@@ -66,10 +68,15 @@ public class BlinkUpPlugin extends CordovaPlugin {
     static final int ERROR_JSON_ERROR = 302;          // android only
 
     // argument indexes from BlinkUp.js, the plugin's JS interface to Cordova
-    private static final int BLINKUP_ARG_API_KEY = 0;
-    private static final int BLINKUP_ARG_DEVELOPER_PLAN_ID = 1;
-    private static final int BLINKUP_ARG_TIMEOUT_MS = 2;
-    private static final int BLINKUP_ARG_GENERATE_PLAN_ID = 3;
+    private static final int INVOKE_BLINKUP_ARG_API_KEY = 0;
+    private static final int INVOKE_BLINKUP_ARG_DEVELOPER_PLAN_ID = 1;
+    private static final int INVOKE_BLINKUP_ARG_TIMEOUT_MS = 2;
+    private static final int INVOKE_BLINKUP_ARG_GENERATE_PLAN_ID = 3;
+
+    private static final int START_BLINKUP_ARG_API_KEY = 0;
+    private static final int START_BLINKUP_ARG_DEVELOPER_PLAN_ID = 1;
+    private static final int START_BLINKUP_IS_IN_DEVELOPMENT = 2;
+    private static final int START_BLINKUP_ARG_TIMEOUT_MS = 3;
 
     /**********************************************************
      * method called by Cordova javascript
@@ -80,7 +87,9 @@ public class BlinkUpPlugin extends CordovaPlugin {
         final Activity activity = cordova.getActivity();
         final BlinkupController controller = BlinkupController.getInstance();
 
-        if (INVOKE_BLINKUP.equalsIgnoreCase(action)) {
+        if (START_BLINKUP.equalsIgnoreCase(action)) {
+            return startBlinkUp(activity, controller, data);
+        } else if (INVOKE_BLINKUP.equalsIgnoreCase(action)) {
             return invokeBlinkup(activity, controller, data);
         } else if (ABORT_BLINKUP.equalsIgnoreCase(action)) {
             return abortBlinkup(controller);
@@ -90,13 +99,52 @@ public class BlinkUpPlugin extends CordovaPlugin {
         return false;
     }
 
+    private boolean startBlinkUp(final Activity activity, final BlinkupController controller, JSONArray data) {
+        int timeoutMs;
+        try {
+            mApiKey = data.getString(START_BLINKUP_ARG_API_KEY);
+            mDeveloperPlanId = data.getString(START_BLINKUP_ARG_DEVELOPER_PLAN_ID);
+            mIsInDevelopment = data.getBoolean(START_BLINKUP_IS_IN_DEVELOPMENT);
+            timeoutMs = data.getInt(START_BLINKUP_ARG_TIMEOUT_MS);
+        } catch (JSONException exc) {
+            BlinkUpPluginResult.sendPluginErrorToCallback(ERROR_INVALID_ARGUMENTS);
+            return false;
+        }
+
+        // if api key not valid, send error message and quit
+        if (!apiKeyFormatValid()) {
+            BlinkUpPluginResult.sendPluginErrorToCallback(ERROR_INVALID_API_KEY);
+            return false;
+        } else if( mDeveloperPlanId == null || mDeveloperPlanId.isEmpty()) {
+            BlinkUpPluginResult.sendPluginErrorToCallback(ERROR_INVALID_ARGUMENTS);
+            return false;
+        }
+
+        controller.intentBlinkupComplete = createBlinkUpCompleteIntent(activity, timeoutMs);
+
+        // default is to run on WebCore thread, we have UI so need UI thread
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                presentBlinkUp(activity, controller);
+            }
+        });
+        return true;
+    }
+
+    /**
+     * Old Style of BlinkUp invocation.
+     *
+     * @deprecated use {@link #startBlinkUp()} instead.
+     */
+    @Deprecated
     private boolean invokeBlinkup(final Activity activity, final BlinkupController controller, JSONArray data) {
         int timeoutMs;
         try {
-            mApiKey = data.getString(BLINKUP_ARG_API_KEY);
-            mDeveloperPlanId = data.getString(BLINKUP_ARG_DEVELOPER_PLAN_ID);
-            timeoutMs = data.getInt(BLINKUP_ARG_TIMEOUT_MS);
-            mGeneratePlanId = data.getBoolean(BLINKUP_ARG_GENERATE_PLAN_ID);
+            mApiKey = data.getString(INVOKE_BLINKUP_ARG_API_KEY);
+            mDeveloperPlanId = data.getString(INVOKE_BLINKUP_ARG_DEVELOPER_PLAN_ID);
+            timeoutMs = data.getInt(INVOKE_BLINKUP_ARG_TIMEOUT_MS);
+            mGeneratePlanId = data.getBoolean(INVOKE_BLINKUP_ARG_GENERATE_PLAN_ID);
         } catch (JSONException exc) {
             BlinkUpPluginResult.sendPluginErrorToCallback(ERROR_INVALID_ARGUMENTS);
             return false;
@@ -108,10 +156,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
             return false;
         }
 
-        Intent blinkupCompleteIntent = new Intent(activity, BlinkUpCompleteActivity.class);
-        blinkupCompleteIntent.putExtra(Extras.EXTRA_DEVELOPER_PLAN_ID, mDeveloperPlanId);
-        blinkupCompleteIntent.putExtra(Extras.EXTRA_TIMEOUT_MS, timeoutMs);
-        controller.intentBlinkupComplete = blinkupCompleteIntent;
+        controller.intentBlinkupComplete = createBlinkUpCompleteIntent(activity, timeoutMs);
 
         // default is to run on WebCore thread, we have UI so need UI thread
         activity.runOnUiThread(new Runnable() {
@@ -121,6 +166,13 @@ public class BlinkUpPlugin extends CordovaPlugin {
             }
         });
         return true;
+    }
+
+    private Intent createBlinkUpCompleteIntent(Activity activity, int timeoutMs) {
+        Intent blinkupCompleteIntent = new Intent(activity, BlinkUpCompleteActivity.class);
+        blinkupCompleteIntent.putExtra(Extras.EXTRA_DEVELOPER_PLAN_ID, mDeveloperPlanId);
+        blinkupCompleteIntent.putExtra(Extras.EXTRA_TIMEOUT_MS, timeoutMs);
+        return blinkupCompleteIntent;
     }
 
     private boolean abortBlinkup(BlinkupController controller) {
@@ -170,13 +222,16 @@ public class BlinkUpPlugin extends CordovaPlugin {
 
         // load cached planId if available. Otherwise, SDK generates new one automatically
         // see electricimp.com/docs/manufacturing/planids/ for info about planIDs
-        if (!mGeneratePlanId) {
-            if (org.apache.cordova.BuildConfig.DEBUG && !TextUtils.isEmpty(mDeveloperPlanId)) {
-                controller.setPlanID(mDeveloperPlanId);
-            } else {
-                String planId = PreferencesHelper.getPlanId(activity);
-                controller.setPlanID(planId);
-            }
+        String planId = null;
+        if (mIsInDevelopment || org.apache.cordova.BuildConfig.DEBUG) {
+            Log.w(TAG, "WARNING - Using Developer Plan. For production, set isInDevelopment flag to false.");
+            planId = mDeveloperPlanId;
+        } else if (!mGeneratePlanId){
+            planId = PreferencesHelper.getPlanId(activity);
+        }
+
+        if(planId != null || !planId.isEmpty()) {
+            controller.setPlanID(planId);
         }
 
         controller.acquireSetupToken(activity, mApiKey, tokenAcquireCallback);
@@ -206,5 +261,4 @@ public class BlinkUpPlugin extends CordovaPlugin {
     static CallbackContext getCallbackContext() {
         return sCallbackContext;
     }
-
 }

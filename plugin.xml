@@ -18,34 +18,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
         id="com.macadamian.blinkup"
-        version="1.0.0">
-    
+        version="1.1.0">
+
     <name>cordova-blinkup-plugin</name>
     <description>
         This plugin allows you to integrate the native BlinkUp process for setting up an Electric Imp device directly into your Cordova / PhoneGap project.
-        
+
         The Plan ID, Device ID, Agent URL, Verfication Date, and status of the operation are all passed back as JSON to the Cordova application, along with a status or error code (see ReadMe.md for JSON format and status code definitions).
     </description>
-    
+
     <info>
         There are several required steps to perform before your application will run. Please see ReadMe.md for information on installation and usage.
 
         If you previously had the plugin installed and are simply updating it, then you do not need to repeat the installation steps.
     </info>
-    
+
     <license>
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
         You may obtain a copy of the License at
-        
+
         http://www.apache.org/licenses/LICENSE-2.0
-        
+
         Unless required by applicable law or agreed to in writing, software
         distributed under the License is distributed on an "AS IS" BASIS,
         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
         See the License for the specific language governing permissions and
         limitations under the License.
-        
+
         Created by Stuart Douglas (sdouglas@macadamian.com) on June 11, 2015.
         Copyright (c) 2015 Macadamian. All rights reserved.
     </license>
@@ -65,7 +65,7 @@
         <!-- Application specific permission injections -->
         <hook type="after_platform_add" src="scripts/android/manifest_permission_inject.js" />
         <hook type="after_plugin_add" src="scripts/android/manifest_permission_inject.js" />
-        
+
         <!-- Injections for blinkup -->
         <hook type="after_platform_add" src="scripts/android/blinkup/main_activity_inject.js" />
         <hook type="after_plugin_add" src="scripts/android/blinkup/main_activity_inject.js" />
@@ -123,5 +123,5 @@
         <header-file src="src/ios/BUDeviceInfo+JSON.h" />
         <source-file src="src/ios/BUDeviceInfo+JSON.m" />
     </platform>
-    
+
 </plugin>

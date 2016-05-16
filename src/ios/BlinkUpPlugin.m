@@ -37,7 +37,14 @@ typedef NS_ENUM(NSInteger, BlinkUpErrorCodes) {
     INVALID_API_KEY     = 103
 };
 
-typedef NS_ENUM(NSInteger, BlinkupArguments) {
+typedef NS_ENUM(NSInteger, StartBlinkupArguments) {
+    StartBlinkUpArgumentApiKey = 0,
+    StartBlinkUpArgumentDeveloperPlanId,
+    StartBlinkUpArgumentIsInDevelopment,
+    StartBlinkUpArgumentTimeOut,
+};
+
+typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
     BlinkUpArgumentApiKey = 0,
     BlinkUpArgumentDeveloperPlanId,
     BlinkUpArgumentTimeOut,
@@ -45,6 +52,30 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
 };
 
 @implementation BlinkUpPlugin
+
+/*********************************************************
+ * Parses arguments from javascript and displays BlinkUp
+ ********************************************************/
+- (void)startBlinkUp:(CDVInvokedUrlCommand*)command {
+    NSLog(@"startBlinkUp Started.");
+
+    _callbackId = command.callbackId;
+
+    [self.commandDelegate runInBackground:^{
+        _apiKey = [command.arguments objectAtIndex:StartBlinkUpArgumentApiKey];
+        _developerPlanId = [command.arguments objectAtIndex:StartBlinkUpArgumentDeveloperPlanId];
+        _timeoutMs = [[command.arguments objectAtIndex:StartBlinkUpArgumentIsInDevelopment] integerValue];
+        _isInDevelopment = [[command.arguments objectAtIndex:StartBlinkUpArgumentTimeOut] boolValue];
+
+        if ([self sendErrorToCallbackIfArgumentsInvalid]) {
+            return;
+        }
+
+        NSLog(@"startBlinkUp. isInDevelopment? %d, timeoutMs? %ld", _isInDevelopment, (long)_timeoutMs);
+
+        [self navigateToBlinkUpView];
+    }];
+}
 
 /*********************************************************
  * Parses arguments from javascript and displays BlinkUp
@@ -126,29 +157,27 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  * if you wish to use a custom UI (refer to API docs)
  ********************************************************/
 - (void) navigateToBlinkUpView {
-
-    // load cached planID (if not cached yet, BlinkUp automatically generates a new one)
-    NSString *planId = [[NSUserDefaults standardUserDefaults] objectForKey:PLAN_ID_CACHE_KEY];
-
-    // If generateNewPlanId is false and a planId is passed from the JS, this will overwrite
-    // the planId from the cache with the one passed from JS. This will only occur during debug builds.
-    //
-    // If the below ifdef is not evaluating to true, make sure that the project's Build Settings "Preprocessor
-    // Macros" section contains the following under the Debug section (and ONLY the debug section): DEBUG=1
-    //
+    // Uses development plan Id if our device is still in development.
+    // Alternatively, tries to load a cached planID that would be generated for a blessed device by electric imp.
     // IMPORTANT NOTE: if a developer planId makes it into production, the device will NOT connect.
     // See electricimp.com/docs/manufacturing/planids/ for more info about planIDs
-    #ifdef DEBUG
-        planId = ([_developerPlanId length] > 0) ? _developerPlanId : nil;
-    #endif
+    NSString *planId = _isInDevelopment
+                            ? _developerPlanId
+                            : [[NSUserDefaults standardUserDefaults] objectForKey:PLAN_ID_CACHE_KEY];
+
+#ifdef DEBUG
+    planId = _developerPlanId;
+    _generatePlanId = false;
+#endif
+
+    if (planId == _developerPlanId) {
+        NSLog(@"WARNING - Using Developer Plan. For production, set isInDevelopment flag to false.");
+    }
 
     if (_blinkUpController == nil) {
-        if (_generatePlanId || planId == nil) {
-            _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey];
-        }
-        else {
-            _blinkUpController = [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
-        }
+        _blinkUpController = (_generatePlanId || planId == nil)
+                                ? [[BUBasicController alloc] initWithApiKey:_apiKey]
+                                : [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -249,7 +278,7 @@ typedef NS_ENUM(NSInteger, BlinkupArguments) {
  ********************************************************/
 - (BOOL) sendErrorToCallbackIfArgumentsInvalid {
 
-    BOOL invalidArguments = (self.timeoutMs == 0);
+    BOOL invalidArguments = self.timeoutMs == 0 || [self.developerPlanId length] == 0;
     BOOL invalidApiKey = ![BlinkUpPlugin isApiKeyFormatValid:self.apiKey];
 
     // send error to callback
