@@ -16,6 +16,7 @@
  */
 
 #import <Cordova/CDV.h>
+#import <AvailabilityMacros.h>
 
 @class BUBasicController;
 @class BUFlashController;
@@ -26,7 +27,7 @@
 // Shows BlinkUp UI for user to enter wifi details and
 // perform the screen flash process to connect to an Imp
 //------------------------------------------------------
-- (void)invokeBlinkUp:(CDVInvokedUrlCommand *)command;
+- (void)startBlinkUp:(CDVInvokedUrlCommand *)command;
 - (void)abortBlinkUp:(CDVInvokedUrlCommand *)command;
 - (void)clearBlinkUpData:(CDVInvokedUrlCommand *)command;
 
@@ -37,6 +38,12 @@
 @property (strong) NSString *callbackId;
 @property (strong) NSString *developerPlanId;
 @property NSInteger timeoutMs;
-@property BOOL generatePlanId;
+@property BOOL isInDevelopment;
+
+//------------------------------------------------------
+// Deprecated Calls.
+//------------------------------------------------------
+- (void)invokeBlinkUp:(CDVInvokedUrlCommand *)command DEPRECATED_MSG_ATTRIBUTE("Use startBlinkUp: method instead.");
+@property BOOL generatePlanId DEPRECATED_ATTRIBUTE;
 
 @end
