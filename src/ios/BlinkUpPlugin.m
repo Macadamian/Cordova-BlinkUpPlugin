@@ -64,8 +64,8 @@ typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
     [self.commandDelegate runInBackground:^{
         _apiKey = [command.arguments objectAtIndex:StartBlinkUpArgumentApiKey];
         _developerPlanId = [command.arguments objectAtIndex:StartBlinkUpArgumentDeveloperPlanId];
-        _timeoutMs = [[command.arguments objectAtIndex:StartBlinkUpArgumentIsInDevelopment] integerValue];
-        _isInDevelopment = [[command.arguments objectAtIndex:StartBlinkUpArgumentTimeOut] boolValue];
+        _isInDevelopment = [[command.arguments objectAtIndex:StartBlinkUpArgumentIsInDevelopment] boolValue];
+        _timeoutMs = [[command.arguments objectAtIndex:StartBlinkUpArgumentTimeOut] integerValue];
 
         if ([self sendErrorToCallbackIfArgumentsInvalid]) {
             return;
