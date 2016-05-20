@@ -21,7 +21,7 @@ module.exports = {
     /** startBlinkUp - starts the blinkup process
     * @param {apiKey}: your blinkup api key
     * @param {developerPlanId}: your development plan Id. Will be disregarded when {isInDevelopment} is set to false
-    * @param {isInDevelopment}: true if you are connecting to development devices. when you are moving to production devices, this must be set to TRUE.
+    * @param {isInDevelopment}: TRUE if you are connecting to development devices. when you are moving to production devices, this must be set to FALSE.
     * @param {timeoutMS}: Amount of second before the application times out. Default & Maximum value is 60000.
     */
     startBlinkUp: function (apiKey, developerPlanId, isInDevelopment, timeoutMs, successCallback, errorCallback) {
