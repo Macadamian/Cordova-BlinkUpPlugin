@@ -53,16 +53,16 @@ When you are adding calls to the plugin in your javascript note that you must up
 
 API Calls
 ----------
-There are three calls from the plugin exposed to the javascript through the `blinkup` interface. For example, to show a BlinkUp you would call `blinkup.invokeBlinkUp(...);`. 
+There are three calls from the plugin exposed to the javascript through the `blinkup` interface. For example, to show a BlinkUp you would call `blinkup.startBlinkUp(...);`. 
 
 All calls take success and failure callbacks as arguments. See the "Callbacks" section below for more information.
 
-**invokeBlinkUp(apiKey, planId, timeoutMs, generateNewPlanId, success, failure)**<br>
+**startBlinkUp(apiKey, planId, timeoutMs, generateNewPlanId, success, failure)**<br>
 Presents the native BlinkUp interface, where user can input wifi info and connect to the Imp.<br>
 `apiKey` *string*: you must enter your apiKey or the plugin won't function.<br>
 `developmentPlanId` *string, default=""*: **IMPORTANT** - you must read "[Testing the Plugin](#testing-the-plugin)" before setting this value. Failure to do so can prevent users from connecting to wifi.<br>
+`isInDevelopment` *boolean, default=false*: TRUE if you are connecting to development devices. when you are moving to production devices, this must be set to FALSE.<br>
 `timeoutMs` *integer, default=30000*: how long to wait for device info from servers.<br>
-`generateNewPlanId` *boolean, default=false*: Set to true if you want to generate a new plan ID every BlinkUp. See https://electricimp.com/docs/manufacturing/planids/ for more info.<br>
 
 **abortBlinkUp(success, failure)**<br>
 Cancels server polling for device info if in progress. 
@@ -111,7 +111,7 @@ var callback = function (message) {
 
 Testing the Plugin
 -----------
-If you are testing devices for development, you can input your own development planID to see the Imps in the Electric Imp IDE. Just set it in the `index.js` files when making a call to `invokeBlinkUp` and ensure you pass *false* for `generateNewPlanId`. The development plan ID you set will override a cached plan ID (if there is one) if `generateNewPlanId` is false. If `generateNewPlanId` is true however, a new plan ID will be generated every BlinkUp and the development plan ID will be ignored.
+If you are testing devices for development, you can input your own development planID to see the Imps in the Electric Imp IDE. Just set it in the `index.js` files when making a call to `startBlinkUp` and ensure you pass *true* for `isInDevelopment`.
 
 When you pass in a development plan ID, the plugin will not cache it. Caching is only done on production plan ID's, and is used to save user settings across BlinkUp's (e.g. when they change their wifi password).
 
@@ -160,7 +160,7 @@ Error Codes
 ----------
 IMPORTANT NOTE: the following codes apply ONLY if `errorType` is "plugin". Errors from the BlinkUp SDK will have their own error codes (which may overlap with those below). If `errorType` is "blinkup", you must use the `errorMsg` field instead. The errors in the 300's range are android only.
 ```
-100 - "Invalid arguments in call to invokeBlinkUp."
+100 - "Invalid arguments in call to startBlinkUp."
 101 - "Could not gather device info. Process timed out."
 102 - "Process cancelled by user."
 103 - "Invalid API key. You must set your BlinkUp API key in index.js." 
