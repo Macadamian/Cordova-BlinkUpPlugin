@@ -27,6 +27,9 @@ Navigate to your project directory and install the plugin with `cordova plugin a
 
 iOS
 --------------
+**REQUIREMENTS**<br>
+* XCode 7
+
 **STEP 1**<br>
 Open `/path/to/project/platforms/ios/<ProjectName>.xcodeproj` in Xcode, select the "Frameworks" group and choose File > Add Files to \<ProjectName\>. Select the `BlinkUp.embeddedframework` file given to you by Electric Imp, and ensure that both "*Copy items if needed*" and "*Add to targets: \<ProjectName\>*" are selected. 
 
