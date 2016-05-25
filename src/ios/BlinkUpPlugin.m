@@ -184,12 +184,6 @@ typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
         [_blinkUpController presentInterfaceAnimated:YES
             resignActive: ^(BOOL willRespond, BOOL userDidCancel, NSError *error) {
                 [self blinkUpDidComplete:willRespond userDidCancel:userDidCancel error:error clearedCache:false];
-
-                // device poller is nil until this block completes, so set its timeout 0.5 seconds from now
-                // this is a HACK, need to solve before release
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                    _blinkUpController.devicePoller.pollTimeout = (_timeoutMs / 1000.0);
-                });
             }
             devicePollingDidComplete: ^(BUDeviceInfo *deviceInfo, BOOL timedOut, NSError *error) {
                 [self deviceRequestDidCompleteWithDeviceInfo:deviceInfo timedOut:timedOut error:error];
