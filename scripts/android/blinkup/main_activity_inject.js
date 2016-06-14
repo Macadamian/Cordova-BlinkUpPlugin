@@ -19,12 +19,16 @@ module.exports = function(ctx) {
   var xml = cordovaUtil.projectConfig(ctx.opts.projectRoot);
   var cfg = new ConfigParser(xml);
 
-  var mainActivityPath = 'platforms/android/src/com/macadamian/' + cfg.name() + '/MainActivity.java';
+  // takes package id (ex: com.macadamian.myapp) and turns it into the source path (ex: com/macadamian/myapp)
+  var srcPath = cfg.packageName().replace(/\./g, '/');
+
+  var mainActivityPath = 'platforms/android/src/' + srcPath + '/MainActivity.java';
+
   fs.readFile(path.join(ctx.opts.projectRoot, mainActivityPath),
     'utf-8',
     function(err, data) {
       if (err) {
-        return deferral.reject('Read file operation failed');
+        return deferral.reject('CordovaBlinkUp Plugin: Read file operation failed for ' + mainActivityPath);
       }
 
       if (data.indexOf(replaceString1) !== -1) {
