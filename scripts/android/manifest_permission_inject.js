@@ -10,27 +10,30 @@ module.exports = function(ctx) {
   var jsonFile = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest_permission_inject.json')));
   var injectPermissions = jsonFile.basePermission.concat(jsonFile.addPermissions);
 
-  fs.readFile(path.join(ctx.opts.projectRoot,
-    'platforms/android/AndroidManifest.xml'), 'utf-8', function(err, data) {
-    if (err) {
-      return deferral.reject('Read file operation failed');
-    }
+  var manifestPath = 'platforms/android/AndroidManifest.xml';
 
-    if (data.indexOf(jsonFile.addPermissions[0]) !== -1) {
-      console.log('CordovaBlinkUp Plugin: AndroidManifest already injected');
-      return deferral.resolve();
-    }
-
-    var result = data.replace(jsonFile.basePermission, injectPermissions.join('\n\t\t'));
-
-    fs.writeFile(path.join(ctx.opts.projectRoot,
-      'platforms/android/AndroidManifest.xml'), result, 'utf-8', function(err) {
+  fs.readFile(path.join(ctx.opts.projectRoot, manifestPath),
+    'utf-8',
+    function(err, data) {
       if (err) {
-        return deferral.reject('Write file operation failed');
+        return deferral.reject('CordovaBlinkUp Plugin: Read file operation failed for ' + manifestPath);
       }
-      console.log('CordovaBlinkUp Plugin: AndroidManifest injected successfullly');
-      deferral.resolve();
-    });
+
+      if (data.indexOf(jsonFile.addPermissions[0]) !== -1) {
+        console.log('CordovaBlinkUp Plugin: AndroidManifest already injected');
+        return deferral.resolve();
+      }
+
+      var result = data.replace(jsonFile.basePermission, injectPermissions.join('\n\t\t'));
+
+      fs.writeFile(path.join(ctx.opts.projectRoot,
+        'platforms/android/AndroidManifest.xml'), result, 'utf-8', function(err) {
+        if (err) {
+          return deferral.reject('Write file operation failed');
+        }
+        console.log('CordovaBlinkUp Plugin: AndroidManifest injected successfullly');
+        deferral.resolve();
+      });
   });
   return deferral.promise;
 };
