@@ -230,7 +230,7 @@ public class BlinkUpPlugin extends CordovaPlugin {
             planId = PreferencesHelper.getPlanId(activity);
         }
 
-        if(planId != null || !planId.isEmpty()) {
+        if(planId != null && !planId.isEmpty()) {
             controller.setPlanID(planId);
         }
 
