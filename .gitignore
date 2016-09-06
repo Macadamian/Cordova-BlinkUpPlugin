@@ -1,3 +1,4 @@
-.DS_Store
 .idea
 *npm-debug.log
+**/.DS_Store
+/tests/ios/node_modules
