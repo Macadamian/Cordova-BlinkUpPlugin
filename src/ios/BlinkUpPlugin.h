@@ -40,10 +40,4 @@
 @property NSInteger timeoutMs;
 @property BOOL isInDevelopment;
 
-//------------------------------------------------------
-// Deprecated Calls.
-//------------------------------------------------------
-- (void)invokeBlinkUp:(CDVInvokedUrlCommand *)command DEPRECATED_MSG_ATTRIBUTE("Use startBlinkUp: method instead.");
-@property BOOL generatePlanId DEPRECATED_ATTRIBUTE;
-
 @end

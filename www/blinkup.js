@@ -27,12 +27,6 @@ module.exports = {
     startBlinkUp: function (apiKey, developerPlanId, isInDevelopment, timeoutMs, successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "startBlinkUp", [apiKey, developerPlanId, isInDevelopment, timeoutMs]);
     },
-    /**
-    * @deprecated Since version 1.1. Will be deleted in version 2.0. Use startBlinkUp instead.
-    */
-    invokeBlinkUp: function (apiKey, developerPlanId, timeoutMs, generateNewPlanId, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "invokeBlinkUp", [apiKey, developerPlanId, timeoutMs, generateNewPlanId]);
-    },
     abortBlinkUp: function (successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "cordova-blinkup-plugin", "abortBlinkUp", []);
     },

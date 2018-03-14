@@ -1,3 +1,9 @@
-repositories { flatDir { dirs 'libs' } }
+repositories {
+    maven {
+        url "repo"
+    }
+}
 
-dependencies { compile(name:'blinkup', ext:'aar') }
+dependencies {
+    compile 'com.electricimp:blinkup:6.3.0'
+}

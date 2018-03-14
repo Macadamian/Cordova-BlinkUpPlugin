@@ -44,13 +44,6 @@ typedef NS_ENUM(NSInteger, StartBlinkupArguments) {
     StartBlinkUpArgumentTimeOut,
 };
 
-typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
-    BlinkUpArgumentApiKey = 0,
-    BlinkUpArgumentDeveloperPlanId,
-    BlinkUpArgumentTimeOut,
-    BlinkUpArgumentGeneratePlanId
-};
-
 @implementation BlinkUpPlugin
 
 /*********************************************************
@@ -72,30 +65,6 @@ typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
         }
 
         NSLog(@"startBlinkUp. isInDevelopment? %d, timeoutMs? %ld", _isInDevelopment, (long)_timeoutMs);
-
-        [self navigateToBlinkUpView];
-    }];
-}
-
-/*********************************************************
- * Parses arguments from javascript and displays BlinkUp
- ********************************************************/
-- (void)invokeBlinkUp:(CDVInvokedUrlCommand*)command {
-    NSLog(@"invokeBlinkUp Started.");
-
-    _callbackId = command.callbackId;
-
-    [self.commandDelegate runInBackground:^{
-        _apiKey = [command.arguments objectAtIndex:BlinkUpArgumentApiKey];
-        _developerPlanId = [command.arguments objectAtIndex:BlinkUpArgumentDeveloperPlanId];
-        _timeoutMs = [[command.arguments objectAtIndex:BlinkUpArgumentTimeOut] integerValue];
-        _generatePlanId = [[command.arguments objectAtIndex:BlinkUpArgumentGeneratePlanId] boolValue];
-
-        if ([self sendErrorToCallbackIfArgumentsInvalid]) {
-            return;
-        }
-
-        NSLog(@"invokeBlinkUp with timeoutMS: %ld", (long)_timeoutMs);
 
         [self navigateToBlinkUpView];
     }];
@@ -167,7 +136,6 @@ typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
 
 #ifdef DEBUG
     planId = _developerPlanId;
-    _generatePlanId = false;
 #endif
 
     if (planId == _developerPlanId) {
@@ -175,7 +143,7 @@ typedef NS_ENUM(NSInteger, InvokeBlinkupArguments) {
     }
 
     if (_blinkUpController == nil) {
-        _blinkUpController = (_generatePlanId || planId == nil)
+        _blinkUpController = (planId == nil)
                                 ? [[BUBasicController alloc] initWithApiKey:_apiKey]
                                 : [[BUBasicController alloc] initWithApiKey:_apiKey planId:planId];
     }
