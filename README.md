@@ -44,7 +44,7 @@ DEBUG=1
 Android
 --------------
 **STEP 1**<br>
-Copy the `blinkup.aar` file from the SDK package given to you by Electric Imp to `/path/to/project/platforms/android/libs`.
+Copy the entire `repo` folder from the SDK 6.3.0 package given to you by Electric Imp to `/path/to/project/platforms/android/`.
 
 NOTES:
 
@@ -60,7 +60,7 @@ There are three calls from the plugin exposed to the javascript through the `bli
 
 All calls take success and failure callbacks as arguments. See the "Callbacks" section below for more information.
 
-**startBlinkUp(apiKey, planId, timeoutMs, generateNewPlanId, success, failure)**<br>
+**startBlinkUp(apiKey, developmentPlanId, isInDevelopment, timeoutMs, success, failure)**<br>
 Presents the native BlinkUp interface, where user can input wifi info and connect to the Imp.<br>
 `apiKey` *string*: you must enter your apiKey or the plugin won't function.<br>
 `developmentPlanId` *string, default=""*: **IMPORTANT** - you must read "[Testing the Plugin](#testing-the-plugin)" before setting this value. Failure to do so can prevent users from connecting to wifi.<br>
@@ -179,12 +179,6 @@ Troubleshooting
 - `BlinkUp.framework` is not in the project's "Link binary with libraries" build phase
 - "Framework Search Paths" in the project's build settings does not include `$(PROJECT_DIR)/BlinkUp.embeddedframework`
 - If the three conditions above are correct and it still does not work, try removing the BlinkUp.framework from "Link binary with librairies" and re-adding it. This is a bug in Xcode.
-
-###Android
-**Project with path "blinkup_sdk" could not be found**
-- The `blinkup_sdk` folder is not in `path/to/project/platforms/android/`
-- The `build.js` file was not updated as outlined in [installation](#android)
-- `cordova build android` was not run after updating the `build.js` file
 
 ###BlinkUp
 **BlinkUp process times out**

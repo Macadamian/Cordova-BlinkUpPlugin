@@ -1,6 +1,6 @@
 {
   "name": "cordova-blinkup-plugin",
-  "version": "1.1.5",
+  "version": "2.0.0",
   "description": "This plugin allows you to integrate the native BlinkUp process for setting up an Electric Imp device directly into your Cordova / PhoneGap project",
   "cordova": {
     "id": "com.macadamian.blinkup",
